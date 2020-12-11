@@ -1,0 +1,19 @@
+.countdown-circle {
+  position: fixed;
+  top: 14.81vh;
+  left: 84.5vh;
+  width: 8.33vh;
+  height: 8.33vh;
+  border-radius: 50%;
+  background-color: rgba(75, 75, 75, 0.65);
+}
+
+.countdown-text {
+  position: relative;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  text-align: center;
+  font-size: 3.14vh;
+  color: var(--our-color);
+}

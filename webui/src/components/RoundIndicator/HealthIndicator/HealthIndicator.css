@@ -1,0 +1,28 @@
+.health-bar {
+  height: 1.11vh;
+  width: 13.89vh;
+  background-color: var(--background-color);
+  box-shadow: 0px 0.8px 0 var(--background-color);
+}
+
+.health-bar-inner {
+  height: 100%;
+}
+
+.health-bar-inner.our {
+  background-color: var(--our-color);
+}
+
+.health-bar-inner.their {
+  background-color: var(--their-color);
+}
+
+.health-status {
+  margin: 0 3.33vh;
+}
+
+.health-indicators {
+  top: 1.85vh;
+  width: 100%;
+  position: fixed;
+}

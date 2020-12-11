@@ -1,0 +1,8 @@
+.vscode
+ui.vuic
+node_modules
+build
+package-lock.json
+vuicc.exe
+
+/**/public/*.png

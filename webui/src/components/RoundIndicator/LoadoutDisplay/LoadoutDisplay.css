@@ -1,0 +1,42 @@
+.loadout-display {
+  position: fixed;
+  margin: 12.87vh 0 0 9.25vh;
+}
+
+.item-rectangle {
+  background: linear-gradient(
+    135deg,
+    rgba(255, 251, 251, 0) 3%,
+    rgba(75, 75, 75, 0.45) 3%,
+    rgba(75, 75, 75, 0.45) 97%,
+    rgba(255, 255, 255, 0) 97%
+  );
+  padding: 1.29vh 2.31vh 1.29vh 2.31vh;
+  margin-bottom: 1.29vh;
+}
+
+.item-rectangle h3 {
+  color: var(--our-color);
+}
+
+.item-rectangle img {
+  margin: auto;
+}
+
+.item-rectangle.weapon {
+  width: 37.03vh;
+  height: 21.29vh;
+  display: flex;
+  flex-direction: column;
+}
+
+.item-rectangle.accessory {
+  width: 37.03vh;
+  height: 7.87vh;
+  display: flex;
+  justify-content: space-between;
+}
+
+.item-rectangle.accessory img {
+  max-width: 4.63vh;
+}

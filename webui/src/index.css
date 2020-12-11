@@ -1,0 +1,39 @@
+@tailwind base;
+
+@tailwind components;
+
+@tailwind utilities;
+
+@font-face {
+  font-family: 'Kelson Bold';
+  src: url('./fonts/Kelson\ Sans\ Bold.otf') format('truetype');
+  font-weight: normal;
+  font-style: normal;
+}
+
+:root {
+  --our-color: #3bbaff;
+  --their-color: #fc644f;
+  --white: #eef2e7;
+  --background-color: #443c38;
+}
+
+#root {
+  overflow: hidden;
+}
+
+body {
+  font-family: 'Kelson Bold';
+  font-weight: normal;
+  font-size: 15;
+  color: var(--white);
+  letter-spacing: 1px;
+}
+
+.shadow-right {
+  text-shadow: 1px 0px 0.5px var(--background-color);
+}
+
+.shadow-left {
+  text-shadow: -0.8px 0.8px 0px var(--background-color);
+}

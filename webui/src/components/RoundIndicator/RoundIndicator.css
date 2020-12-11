@@ -1,0 +1,26 @@
+.score {
+  position: fixed;
+  left: 6.66666666667vh;
+  bottom: 4.62962962963vh;
+}
+
+.score-circle {
+  width: 1.48vh;
+  height: 1.48vh;
+  color: var(--background-color);
+}
+
+.score-circle.win {
+  color: var(--our-color);
+}
+
+.score-circle.loss {
+  color: var(--their-color);
+}
+
+.score-text {
+  font-size: 3.14vh;
+  line-height: 3.14vh;
+  width: 1.85vh;
+  margin-right: 0.74vh;
+}

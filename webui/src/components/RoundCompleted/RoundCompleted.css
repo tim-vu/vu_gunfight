@@ -1,0 +1,83 @@
+.round-result {
+  font-size: 6.94vh;
+  text-align: center;
+  margin-top: 46.29vh;
+  height: 9.26vh;
+  width: 100%;
+}
+
+.round-result.win {
+  background: linear-gradient(
+    90deg,
+    rgba(0, 0, 0, 0) 15%,
+    rgba(43, 77, 120, 0.85) 45%,
+    rgba(43, 77, 120, 0.9) 50%,
+    rgba(43, 77, 120, 0.85) 55%,
+    rgba(0, 0, 0, 0) 85%
+  );
+}
+
+.round-result.loss {
+  background: linear-gradient(
+    90deg,
+    rgba(0, 0, 0, 0) 15%,
+    rgba(112, 26, 12, 1) 45%,
+    rgba(112, 26, 12, 1) 50%,
+    rgba(112, 26, 12, 1) 55%,
+    rgba(0, 0, 0, 0) 85%
+  );
+
+  color: var(--their-color);
+}
+
+.score-rectangle {
+  width: 20.37vh;
+  height: 20.37vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+
+  font-size: 6.94vh;
+  line-height: 6.94vh;
+  text-align: center;
+}
+
+.our .score-rectangle {
+  color: var(--our-color);
+  border: 2px solid var(--our-color);
+}
+
+.their .score-rectangle {
+  color: var(--their-color);
+  border: 2px solid var(--their-color);
+}
+
+.cause {
+  color: var(--white);
+  margin-top: 0.74vh;
+  font-size: 2.037vh;
+}
+
+.score-display {
+  margin-top: 4.17vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  font-size: 2.037vh;
+}
+.score-display.our p {
+  color: var(--our-color);
+}
+
+.score-display.their p {
+  color: var(--their-color);
+}
+
+.score-display.last {
+  margin-left: 29.53vh;
+}
+
+.switching {
+  margin-top: 3.7vh;
+  font-size: 4.16vh;
+}
