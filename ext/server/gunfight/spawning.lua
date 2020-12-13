@@ -1,5 +1,7 @@
 require('__shared/team')
 
+local Spawning = class('Spawning')
+
 local SoldierAsset = { 
   [Team.US] = 'Gameplay/Kits/USAssault',
   [Team.RU] = 'Gameplay/Kits/RUAssault'
@@ -38,7 +40,7 @@ local selectWeapon = function(player, weaponSlot, weapon, attachments)
 
 end
 
-local spawnSoldier = function(player, loadout, transform, team)
+Spawning.static.spawnSoldier =  function(player, loadout, transform, team)
 
   selectWeapon(player, WeaponSlot.WeaponSlot_0, loadout.primary.weapon.name, loadout.primary.attachments)
 
@@ -70,6 +72,4 @@ local spawnSoldier = function(player, loadout, transform, team)
 
 end
 
-return {
-  spawnSoldier = spawnSoldier
-}
+return Spawning
