@@ -2,7 +2,7 @@ require('__shared/team')
 require('__shared/common.lua')
 require('gunfight/equipment')
 require('timer')
-local Status = require('__shared/status')
+local Status = require('gunfight/status')
 local Spawning = require('gunfight/spawning')
 local MapData = require('__shared/mapdata')
 
