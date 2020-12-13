@@ -1,8 +1,8 @@
 require('__shared/common.lua')
-require('gunfight/equipment')
 require('timer')
 local Status = require('gunfight/status')
 local Spawning = require('gunfight/spawning')
+local Equipment = require('gunfight/equipment')
 local MapData = require('__shared/mapdata')
 local Team = require('__shared/team')
 
@@ -87,7 +87,7 @@ end
 function Match:_initializeLoadouts()
 
   for i=1,Match.ROUNDS,1 do
-    local loadout = LOADOUTS[math.random(#LOADOUTS)]
+    local loadout = Equipment.LOADOUTS[math.random(#Equipment.LOADOUTS)]
     self.loadouts[i] = loadout
   end
 

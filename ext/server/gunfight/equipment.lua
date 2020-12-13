@@ -1,3 +1,5 @@
+local Equipment = class('Equipment')
+
 local WEAPONS = {
   M98B = {
     displayName = 'M98B',
@@ -30,7 +32,7 @@ local ATTACHMENTS = {
 
 }
 
-LOADOUTS = {
+Equipment.static.LOADOUTS = {
   {
     primary = { 
       weapon = WEAPONS.M98B,
@@ -47,4 +49,6 @@ LOADOUTS = {
     }
   }
 }
+
+return Equipment
 
