@@ -1,5 +1,5 @@
-require('__shared/team')
 require('__shared/math/rectangle')
+local Team = require('__shared/team')
 
 return {
 

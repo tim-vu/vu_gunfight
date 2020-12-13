@@ -1,4 +1,4 @@
-require('__shared/team')
+local Team = require('__shared/team')
 
 class('Match')
 

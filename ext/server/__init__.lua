@@ -2,7 +2,7 @@ require('gunfight/equipment')
 require('gunfight/gamesettings')
 local Spawning = require('gunfight/spawning')
 local Match = require('gunfight/match')
-require('__shared/team')
+local Team = require('__shared/team')
 
 local currentMatch = nil
 

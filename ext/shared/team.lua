@@ -1,11 +1,11 @@
-Team = {
+local team = {
   ['US'] = 1,
   ['RU'] = 2
 }
 
 local otherTeam = {
-  [Team.US] = Team.RU,
-  [Team.RU] = Team.US
+  [team.US] = team.RU,
+  [team.RU] = team.US
 } 
 
 GetOtherTeam = function(team)
@@ -13,10 +13,12 @@ GetOtherTeam = function(team)
 end
 
 local teamId = {
-  [Team.US] = TeamId.Team1,
-  [Team.RU] = TeamId.Team2
+  [team.US] = TeamId.Team1,
+  [team.RU] = TeamId.Team2
 }
 
 GetTeamId = function(team)
   return teamId[team]
 end
+
+return team
