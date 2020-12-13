@@ -8,15 +8,15 @@ local Team = require('__shared/team')
 
 local Match = class('Match')
 
-Match.TEAMS = 2
-Match.TEAM_SIZE = 1
-Match.ROUNDS = 10
-Match.PREGAME_WAIT_DURATION = 2
-Match.ROUND_ENDED_WAIT_DURATION = 2
-Match.ROUND_ENDED_MOVEMENT_DURATION = 1.5
-Match.PREROUND_WAIT_DURATION = 3
-Match.POST_MATCH_DURATION = 3
-Match.ROUNDS_PER_SIDE = 2
+Match.static.TEAMS = 2
+Match.static.TEAM_SIZE = 1
+Match.static.ROUNDS = 10
+Match.static.PREGAME_WAIT_DURATION = 2
+Match.static.ROUND_ENDED_WAIT_DURATION = 2
+Match.static.ROUND_ENDED_MOVEMENT_DURATION = 1.5
+Match.static.PREROUND_WAIT_DURATION = 3
+Match.static.POST_MATCH_DURATION = 3
+Match.static.ROUNDS_PER_SIDE = 2
 
 function Match:__init()
   self.players = { }
