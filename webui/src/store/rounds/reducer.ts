@@ -37,6 +37,8 @@ const initialState : RoundsState = {
 
 const roundsReducer : Reducer<RoundsState, RoundsAction> = (state = initialState, action) => {
   switch(action.type){
+    case "MATCH_STARTING":
+      return initialState;
     case "ROUND_STARTING":
       return {
         ...state,

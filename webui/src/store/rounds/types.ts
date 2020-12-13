@@ -1,4 +1,5 @@
 import { Loadout } from "models/Loadout"
+import { MatchStarting } from "store/match/types";
 
 export const ROUND_COMPLETED = "ROUND_COMPLETED"
 export const ROUND_STARTING = 'ROUND_STARTING';
@@ -22,4 +23,4 @@ export interface RoundCompleted {
 }
 
 
-export type RoundsAction = RoundCompleted | RoundStarting
+export type RoundsAction = RoundCompleted | RoundStarting | MatchStarting
