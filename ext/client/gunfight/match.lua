@@ -6,6 +6,9 @@ function Match:__init()
 
   self.team = nil
 
+  Events:Subscribe('Extension:Loaded', self._onExtensionLoaded)
+  Hooks:Install('UI:PushScreen', 1, self, self._onUIPushScreen)
+
   NetEvents:Subscribe('Match:JoinFailed', self, self._onJoinFailed)
   NetEvents:Subscribe('Match:Joined', self, self._onMatchJoined)
   NetEvents:Subscribe('Match:Starting', self, self._onMatchStarting)
@@ -16,6 +19,26 @@ function Match:__init()
   NetEvents:Subscribe('Damage:Dealt', self, self._onDamageDealt)
   NetEvents:Subscribe('Round:Completed', self, self._onRoundCompleted)
 
+end
+
+function Match:_onUIPushScreen(hook, screen, priority, parentGraph)
+
+  local screen = UIGraphAsset(screen)
+
+  if screen.name == 'UI/Flow/Screen/IngameMenuMP' then
+    WebUI:Hide()
+    return
+  end
+
+  if screen.name == 'UI/Flow/Screen/HudScreen' then
+    WebUI:Show()
+    return
+  end
+end
+
+function Match:_onExtensionLoaded(levelName, gameMode)
+  WebUI:Init()
+  WebUI:BringToFront()
 end
 
 function Match:_onJoinFailed(reason)

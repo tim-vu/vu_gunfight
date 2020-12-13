@@ -113,8 +113,3 @@ Events:Subscribe('Partition:Loaded', function(partition)
 
   end
 end)
-
-Events:Subscribe('Extension:Loaded', function(levelName, gameMode)
-    WebUI:Init()
-    WebUI:BringToFront()
-  end)
