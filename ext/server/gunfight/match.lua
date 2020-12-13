@@ -176,7 +176,7 @@ end
 
 function Match:_getSpawnPoints(round, team, spawnpoints)
 
-  local div = (round - 1) / Match.ROUNDS_PER_SIDE
+  local div = (round - 1) // Match.ROUNDS_PER_SIDE
 
   if team == Team.US then
     return div % 2 == 0 and spawnpoints.A or spawnpoints.B
