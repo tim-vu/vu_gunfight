@@ -16,6 +16,7 @@ import RoundCompleted from 'components/RoundCompleted/RoundCompleted';
 import LoadoutDisplay from 'components/RoundIndicator/LoadoutDisplay/LoadoutDisplay';
 import Countdown from 'components/RoundIndicator/Countdown/Countdown';
 import HealthIndicator from 'components/RoundIndicator/HealthIndicator/HealthIndicator';
+import Scoreboard from 'components/Scoreboard/Scoreboard';
 
 const PREROUND_WAIT = 5;
 
@@ -31,6 +32,8 @@ const App: React.FC = () => {
       <Route path="/round_starting" component={LoadoutDisplay} />
       <Route path="/round_started" component={RoundIndicator} />
       <Route path="/round_started" component={HealthIndicator} />
+      <Route path="/match_completed" component={RoundCompleted} />
+      <Route path="/scoreboard" component={Scoreboard} />
     </div>
   );
 };

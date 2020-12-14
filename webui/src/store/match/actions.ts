@@ -20,6 +20,10 @@ function registerActionCreators(history : History) {
     store.dispatch(action);
   }
 
+  window.matchCompleted = (win : boolean) => {
+    history.push('/match_completed')
+  }
+
   window.matchStopped = () => {
     history.push('');
   }

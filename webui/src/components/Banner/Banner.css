@@ -1,0 +1,31 @@
+.round-result {
+  font-size: 6.94vh;
+  text-align: center;
+  margin-top: 46.29vh;
+  height: 9.26vh;
+  width: 100%;
+}
+
+.round-result.win {
+  background: linear-gradient(
+    90deg,
+    rgba(0, 0, 0, 0) 15%,
+    rgba(43, 77, 120, 0.85) 45%,
+    rgba(43, 77, 120, 0.9) 50%,
+    rgba(43, 77, 120, 0.85) 55%,
+    rgba(0, 0, 0, 0) 85%
+  );
+}
+
+.round-result.loss {
+  background: linear-gradient(
+    90deg,
+    rgba(0, 0, 0, 0) 15%,
+    rgba(112, 26, 12, 1) 45%,
+    rgba(112, 26, 12, 1) 50%,
+    rgba(112, 26, 12, 1) 55%,
+    rgba(0, 0, 0, 0) 85%
+  );
+
+  color: var(--their-color);
+}

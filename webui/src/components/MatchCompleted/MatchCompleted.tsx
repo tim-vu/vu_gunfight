@@ -1,8 +1,7 @@
 import React from 'react';
 
-import './RoundCompleted.css';
 import 'index.css';
-import { RoundsState } from 'store/rounds/types';
+import { RoundsState, RoundStarting } from 'store/rounds/types';
 import { connect } from 'react-redux';
 import { AppState } from 'store';
 import { getOtherTeam, Team } from 'models/Team';
@@ -11,6 +10,7 @@ import Banner from 'components/Banner/Banner';
 import { Result } from 'models/Result';
 
 const MAX_ROUNDS = 10;
+const ROUNDS_TO_WIN = MAX_ROUNDS / 2 + 1;
 
 interface RoundCompletedProps {
   rounds: RoundsState;
@@ -22,11 +22,22 @@ const getCause = (win: boolean, ourTeam: Team) => {
   return `${Team[eliminatedTeam]} ELIMINATED`;
 };
 
-const RoundCompleted: React.FC<RoundCompletedProps> = ({ rounds, game }) => {
-  const resultText = rounds.isLastRoundWin ? 'ROUND WIN' : 'ROUND LOSS';
-  const result = rounds.isLastRoundWin ? Result.Win : Result.Loss;
+const getResult = (rounds: RoundsState) => {
+  if (rounds.wins > ROUNDS_TO_WIN) return Result.Win;
+  if (rounds.losses > ROUNDS_TO_WIN) return Result.Loss;
 
-  const switchingSides = rounds.rounds % 2 == 0;
+  return Result.Draw;
+};
+
+const RESULT_TO_TEXT = {
+  [Result.Win]: 'VICTORY!',
+  [Result.Loss]: 'DEFEAT!',
+  [Result.Draw]: 'DRAW!',
+};
+
+const RoundCompleted: React.FC<RoundCompletedProps> = ({ rounds, game }) => {
+  const result = getResult(rounds);
+  const resultText = RESULT_TO_TEXT[result];
 
   return (
     <div className="w-full h-full flex flex-col justify-start items-center">
@@ -42,9 +53,6 @@ const RoundCompleted: React.FC<RoundCompletedProps> = ({ rounds, game }) => {
           <h2 className="score-rectangle">{rounds.losses}</h2>
         </div>
       </div>
-      <h2 className={'switching ' + (switchingSides ? 'block' : 'hidden')}>
-        SWITCHING SIDES
-      </h2>
     </div>
   );
 };

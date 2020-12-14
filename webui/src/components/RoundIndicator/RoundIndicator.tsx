@@ -11,7 +11,6 @@ import LoadoutDisplay from './LoadoutDisplay/LoadoutDisplay';
 import Countdown from './Countdown/Countdown';
 
 const MAX_ROUNDS = 10;
-const ROUNDS_TO_WIN = MAX_ROUNDS / 2 + 1;
 
 const renderNTimes: (n: number, node: React.ReactNode) => React.ReactNode = (
   n,
