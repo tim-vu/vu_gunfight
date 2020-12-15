@@ -6,3 +6,4 @@ package-lock.json
 vuicc.exe
 
 /**/public/*.png
+/**/styles.css
