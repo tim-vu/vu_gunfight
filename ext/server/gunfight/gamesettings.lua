@@ -5,7 +5,7 @@ Events:Subscribe('Level:Loaded', function(levelName, gameMode, round, roundsPerM
   local settings = SyncedBFSettings(sett)
 
   settings.noMinimap = true
-
-  print('Disabled minimap')
+  settings.teamSwitchingAllowed = false
+  settings.no3dSpotting = true
 
 end)

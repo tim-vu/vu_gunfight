@@ -6,6 +6,6 @@ Hooks:Install('Client:UpdateFirstPersonTransform', 1, function(hook, transform)
       return
   end
 
-  --hook:Return()
+  hook:Return()
 
 end)

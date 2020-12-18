@@ -1,10 +1,10 @@
 require('__shared/math/rectangle')
-local Team = require('__shared/team')
 
 return {
 
-  NOSHAR_CANALS = {
-    name = 'Noshar Canals',
+  ['NOSHAR_CANALS_1'] = {
+    displayName = 'Noshar Canals',
+    teamSize = 1,
     spawnpoints = {
       A = {
         LinearTransform(

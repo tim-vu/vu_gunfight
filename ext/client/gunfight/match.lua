@@ -1,5 +1,3 @@
-local Team = require('__shared/team')
-
 class('Match')
 
 function Match:__init()
@@ -9,7 +7,6 @@ function Match:__init()
   Events:Subscribe('Extension:Loaded', self._onExtensionLoaded)
   Hooks:Install('UI:PushScreen', 1, self, self._onUIPushScreen)
 
-  NetEvents:Subscribe('Match:JoinFailed', self, self._onJoinFailed)
   NetEvents:Subscribe('Match:Joined', self, self._onMatchJoined)
   NetEvents:Subscribe('Match:Starting', self, self._onMatchStarting)
   NetEvents:Subscribe('Match:Completed', self, self._onMatchCompleted)
@@ -37,39 +34,23 @@ function Match:_onUIPushScreen(hook, screen, priority, parentGraph)
 end
 
 function Match:_onExtensionLoaded(levelName, gameMode)
+
   WebUI:Init()
   WebUI:BringToFront()
 end
 
-function Match:_onJoinFailed(reason)
-
-  print('Join failed: ' .. tostring(data))
-
-end
-
 function Match:_onMatchJoined(team)
-
   print('Joined match, team: ' .. tostring(team))
-
   self.team = team
-
 end
 
 function Match:_onMatchStarting(players)
-
   local call = string.format('matchStarting(%d, %s)', self.team, json.encode(players))
-
-  print(call)
-
   WebUI:ExecuteJS(call)
 end
 
 function Match:_onMatchCompleted(winningTeam)
-
-  print('Match completed ' .. tostring(winningTeam))
-
-  --TODO
-
+  WebUI:ExecuteJS('matchCompleted()')
 end
 
 function Match:_onMatchEnded(data)
@@ -83,31 +64,19 @@ function Match:_onMatchEnded(data)
 end
 
 function Match:_onRoundStarting(loadout)
-
   local call = 'roundStarting(' .. json.encode(loadout) .. ')'
-
-  print(call)
-
   WebUI:ExecuteJS(call)
 
 end
 
 function Match:_onRoundStarted(data)
-
   local call = 'roundStarted()'
-
-  print(call)
-
   WebUI:ExecuteJS(call)
 
 end
 
 function Match:_onDamageDealt(data)
-
-  local call = string.format('damageDealt(%d, %d, %f)', data.giverId, data.receiverId, data.amount);
-
-  print(call)
-
+  local call = string.format('damageDealt(%s, %d, %f)', tostring(data.giverId), data.receiverId, data.amount);
   WebUI:ExecuteJS(call)
 end
 

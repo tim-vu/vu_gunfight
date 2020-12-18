@@ -1,15 +1,14 @@
 require('__shared/common.lua')
 require('timer')
-local Status = require('gunfight/status')
+
 local Spawning = require('gunfight/spawning')
 local Equipment = require('gunfight/equipment')
-local MapData = require('__shared/mapdata')
 local Team = require('__shared/team')
+local Status = require('__shared/status')
 
 local Match = class('Match')
 
 Match.static.TEAMS = 2
-Match.static.TEAM_SIZE = 1
 Match.static.ROUNDS = 10
 Match.static.PREGAME_WAIT_DURATION = 2
 Match.static.ROUND_ENDED_WAIT_DURATION = 2
@@ -18,7 +17,7 @@ Match.static.PREROUND_WAIT_DURATION = 3
 Match.static.POST_MATCH_DURATION = 3
 Match.static.ROUNDS_PER_SIDE = 2
 
-function Match:__init()
+function Match:__init(mapId, map)
   self.players = { }
   self.scores = {
     [Team.US] = 0,
@@ -28,7 +27,9 @@ function Match:__init()
   self.timestamp = 0
   self.round = 1
   self.loadouts = { }
-  self.map = MapData.NOSHAR_CANALS
+  self.mapId = mapId
+
+  self.map = map
 
   self._playerLeftEvent = Events:Subscribe('Player:Left', self, self._onPlayerLeft)
   self._playerKilledEvent = Events:Subscribe('Player:Killed', self, self._onPlayerKilled)
@@ -36,33 +37,36 @@ function Match:__init()
 
 end
 
+function Match:IsFull()
+  return #pairs(self.players) >= self.map.teamSize * Match.TEAMS
+end
 function Match:Join(player, team)
 
   if self.status ~= Status.NOT_STARTED then
-    NetEvents:SendTo('Match:JoinFailed', 'The game you tried to join is already in progress')
-    return
+    return false, 'The game you tried to join is already in progress'
+  end
+
+  if self.players[player.id] ~= nil then
+    return false, 'You have already joined this match'
   end
 
   local teamPlayerCount = #self:_getPlayersByTeam(team)
 
-  if teamPlayerCount >= Match.TEAM_SIZE then
-    NetEvents:SendTo('Match:JoinFailed', player, 'The team you tried to join is full')
-    print('Team full')
-    return
+  if teamPlayerCount >= self.map.teamSize then
+    return false, 'The team you tried to join is full'
   end
 
-  --Make sure the player is in the correct team
   local teamId = GetTeamId(team)
 
   if player.teamId ~= teamId then
     player.teamId = team
   end
 
-  self.players[player.id] = { id = player.id, name = player.name, team = team, alive = true }
+  self.players[player.id] = { id = player.id, team = team, alive = true }
 
   NetEvents:SendTo('Match:Joined', player, team)
 
-  if GetCount(self.players) == Match.TEAMS * Match.TEAM_SIZE then
+  if GetCount(self.players) == Match.TEAMS * self.map.teamSize then
     print('Enough players, starting game')
     self:_initializeLoadouts()
 
@@ -79,9 +83,16 @@ function Match:Join(player, team)
       self:_prepareRound()
     end, Match.PREGAME_WAIT_DURATION)
 
+    self.timestamp = os.time(os.date("!*t"))
     self.status = Status.PREGAME_WAIT
   end
 
+  return true
+
+end
+
+function Match:Leave(player)
+  self.players[player.id] = nil
 end
 
 function Match:_initializeLoadouts()
@@ -269,14 +280,32 @@ function Match:stopMatch()
 
   self:_sendToPlayers('Match:Ended')
 
+  local players = self.players
   self.players = { }
+
+  for k,_ in pairs(players) do
+    local player = PlayerManager:GetPlayerById(k)
+
+    if player ~= nil then
+
+      local soldier = player.soldier
+      if soldier ~= nil and soldier.isAlive then
+          print('Killing soldier')
+          soldier:Kill()
+      end
+
+    end
+
+  end
+
+
+  self.status = Status.MATCH_ENDED
+
+  Events:Dispatch('Match:Ended', self.mapId)
 
   self._playerLeftEvent:Unsubscribe()
   self._playerKilledEvent:Unsubscribe()
   self._soldierDamageHook:Uninstall()
-
-  self.status = Status.MATCH_ENDED
-  print('Match stopped')
 
 end
 
@@ -336,6 +365,11 @@ function Match:_onPlayerKilled(player)
 
     if v > Match.ROUNDS / 2 then
 
+        if not self:_sendToPlayers('Round:Completed', GetOtherTeam(p.team)) then
+          self:stopMatch()
+          return
+        end
+
         if not self:_sendToPlayers('Match:Completed', k) then
           self:stopMatch()
           return
@@ -357,6 +391,8 @@ function Match:_onPlayerKilled(player)
   SetTimeout(function()
     self:toggleInput(false)
   end, Match.ROUND_ENDED_MOVEMENT_DURATION)
+
+  Events:Dispatch('Match:RoundCompleted', self.mapId)
 
   if not self:_sendToPlayers('Round:Completed', GetOtherTeam(p.team)) then
     self:stopMatch()
@@ -381,7 +417,7 @@ function Match:_onPlayerLeft(player)
     return
   end
 
-  self.players[k] = nil
+  self.players[player.id] = nil
   self:stopMatch()
 
 end
@@ -422,6 +458,6 @@ function Match:_sendToPlayers(eventName, args)
 
   return true
 
-end 
+end
 
 return Match

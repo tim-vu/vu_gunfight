@@ -16,8 +16,6 @@ local function onEngineUpdate(deltaTime, simulationDeltaTime)
 
       if event.timestamp < now - event.delay then
 
-        print('Executing interval')
-
         event.callback()
 
         event.timestamp = now
@@ -28,10 +26,8 @@ local function onEngineUpdate(deltaTime, simulationDeltaTime)
 
       if event.timestamp < now then
 
-        print('Executing timeout')
-  
         event.callback()
-  
+
         table.remove(events, i)
       end
 
@@ -41,7 +37,6 @@ local function onEngineUpdate(deltaTime, simulationDeltaTime)
   end
 
   if #events == 0 then
-    print('No timeouts remaining, unsubscribing')
     engineUpdateEvent:Unsubscribe()
     engineUpdateEvent = nil
   end
@@ -50,7 +45,6 @@ end
 
 function SetTimeout(func, delay)
 
-  print('Adding timeout')
   table.insert(events, {
     callback = func,
     timestamp = os.clock() + delay,
@@ -58,7 +52,6 @@ function SetTimeout(func, delay)
   })
 
   if #events == 1 then
-    print('Subscribing')
     engineUpdateEvent = Events:Subscribe('Engine:Update', onEngineUpdate)
   end
 
