@@ -17,7 +17,7 @@ local removeDefaultUI = function(setup)
     Hooks:Install("UI:PushScreen", 1, function(hook, screen, priority, parentGraph)
         local screen = UIGraphAsset(screen)
 
-        if setup and screen.name then
+        if setup and screen.name == SPAWN_BUTTON_SCREEN then
             return
         end
 
