@@ -6,6 +6,7 @@ local Spawning = require('gunfight/spawning')
 local Team = require('__shared/team')
 local Settings = require('__shared/settings')
 local Maps = require('__shared/maps')
+local Equipment = require('gunfight/equipment')
 
 if Settings.setup then
   print('Setup mode enabled')
@@ -15,7 +16,7 @@ end
 
 NetEvents:Subscribe('Spawn', function(player)
 
-  local loadout = LOADOUTS[1]
+  local loadout = Equipment.LOADOUTS[1]
 
   local soldier = player.soldier
 
@@ -41,3 +42,4 @@ NetEvents:Subscribe('Spawn', function(player)
   Spawning.spawnSoldier(player, loadout, transform, Team.US)
 
 end)
+
