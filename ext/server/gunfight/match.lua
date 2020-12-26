@@ -9,12 +9,12 @@ local Status = require('__shared/status')
 local Match = class('Match')
 
 Match.static.TEAMS = 2
-Match.static.ROUNDS = 10
+Match.static.ROUNDS = 11
 Match.static.PREGAME_WAIT_DURATION = 2
-Match.static.ROUND_ENDED_WAIT_DURATION = 2
+Match.static.ROUND_ENDED_WAIT_DURATION = 3
 Match.static.ROUND_ENDED_MOVEMENT_DURATION = 1.5
-Match.static.PREROUND_WAIT_DURATION = 3
-Match.static.POST_MATCH_DURATION = 3
+Match.static.PREROUND_WAIT_DURATION = 5
+Match.static.POST_MATCH_DURATION = 5
 Match.static.ROUNDS_PER_SIDE = 2
 
 function Match:__init(mapId, map)
@@ -31,15 +31,32 @@ function Match:__init(mapId, map)
 
   self.map = map
 
-  self._playerLeftEvent = Events:Subscribe('Player:Left', self, self._onPlayerLeft)
+  self._playerLeftEvent = Events:Subscribe('Player:Left', self, self.Leave)
   self._playerKilledEvent = Events:Subscribe('Player:Killed', self, self._onPlayerKilled)
   self._soldierDamageHook = Hooks:Install('Soldier:Damage', 1, self, self._onDamageDealt)
 
 end
 
 function Match:IsFull()
-  return #pairs(self.players) >= self.map.teamSize * Match.TEAMS
+  return GetCount(self.players) >= self.map.teamSize * Match.TEAMS
 end
+
+function Match:IsTeamFull(team)
+
+  local playerCount = 0
+
+  for _,v in pairs(self.players) do
+
+    if v.team == team then
+      playerCount = playerCount + 1
+    end
+
+  end
+
+  return playerCount >= self.map.teamSize
+
+end
+
 function Match:Join(player, team)
 
   if self.status ~= Status.NOT_STARTED then
@@ -62,7 +79,7 @@ function Match:Join(player, team)
     player.teamId = team
   end
 
-  self.players[player.id] = { id = player.id, team = team, alive = true }
+  self.players[player.id] = { name = player.name, id = player.id, team = team, alive = true }
 
   NetEvents:SendTo('Match:Joined', player, team)
 
@@ -76,9 +93,9 @@ function Match:Join(player, team)
       table.insert(playersArray, v)
     end
 
-    self:_sendToPlayers('Match:Starting', playersArray)
+    self:_sendToPlayers('Match:Starting', self.map.displayName, playersArray)
 
-    SetTimeout(function()
+    self._pregameWaitTimeout = SetTimeout(function()
       print('Pregame wait over, preparing round')
       self:_prepareRound()
     end, Match.PREGAME_WAIT_DURATION)
@@ -92,7 +109,23 @@ function Match:Join(player, team)
 end
 
 function Match:Leave(player)
+
+  local p = self.players[player.id]
+
+  if p == nil then
+    return
+  end
+
   self.players[player.id] = nil
+
+  if self.status == Status.NOT_STARTED then
+    Events:Dispatch('Match:PlayerLeft', self.mapId, p.id)
+    return
+  end
+
+  print('Stopping match as someone left')
+  self:stopMatch()
+
 end
 
 function Match:_initializeLoadouts()
@@ -177,7 +210,7 @@ function Match:_prepareRound()
     return
   end
 
-  SetTimeout(function()
+  self._preroundWaitTimeout = SetTimeout(function()
     print('Preround wait over, starting roud')
     self:startRound()
   end, Match.PREROUND_WAIT_DURATION)
@@ -278,6 +311,8 @@ function Match:stopMatch()
     return
   end
 
+  self:_clearTimers()
+
   self:_sendToPlayers('Match:Ended')
 
   local players = self.players
@@ -298,7 +333,6 @@ function Match:stopMatch()
 
   end
 
-
   self.status = Status.MATCH_ENDED
 
   Events:Dispatch('Match:Ended', self.mapId)
@@ -306,6 +340,17 @@ function Match:stopMatch()
   self._playerLeftEvent:Unsubscribe()
   self._playerKilledEvent:Unsubscribe()
   self._soldierDamageHook:Uninstall()
+
+end
+
+function Match:_clearTimers()
+
+  ClearTimeout(self._pregameWaitTimeout)
+  ClearTimeout(self._preroundWaitTimeout)
+  ClearTimeout(self._postmatchTimeout)
+  ClearTimeout(self._roundEndedMovementTimeout)
+  ClearTimeout(self._roundEndedWaitTimeout)
+  ClearTimeout(self._matchEndedMovementTimeout)
 
 end
 
@@ -344,38 +389,22 @@ function Match:_onPlayerKilled(player)
 
   end
 
-  if self.scores[Team.US] == Match.ROUNDS / 2 and self.scores[Team.RU] == Match.ROUNDS / 2 then
-
-    if not self:_sendToPlayers('Match:Draw') then
-      self:stopMatch()
-      return
-    end
-
-    SetTimeout(function()
-      print('Postmatch wait over, stopping match')
-
-      self:stopMatch()
-    end, Match.POST_MATCH_DURATION)
-
-    self.status = Status.MATCH_ENDED_WAIT
-    return
-  end
+  Events:Dispatch('Match:RoundCompleted', self.mapId)
 
   for k,v in pairs(self.scores) do
 
     if v > Match.ROUNDS / 2 then
-
-        if not self:_sendToPlayers('Round:Completed', GetOtherTeam(p.team)) then
-          self:stopMatch()
-          return
-        end
 
         if not self:_sendToPlayers('Match:Completed', k) then
           self:stopMatch()
           return
         end
 
-        SetTimeout(function()
+        self._matchEndedMovementTimeout = SetTimeout(function()
+          self:toggleInput(false)
+        end, Match.ROUND_ENDED_MOVEMENT_DURATION)
+
+        self._postMatchTimeout = SetTimeout(function()
           print('Postmatch wait over, stopping match')
     
           self:stopMatch()
@@ -383,16 +412,14 @@ function Match:_onPlayerKilled(player)
 
         self.status = Status.MATCH_ENDED_WAIT
 
-      return
+        return
     end
 
   end
 
-  SetTimeout(function()
+  self._roundEndedMovementTimeout = SetTimeout(function()
     self:toggleInput(false)
   end, Match.ROUND_ENDED_MOVEMENT_DURATION)
-
-  Events:Dispatch('Match:RoundCompleted', self.mapId)
 
   if not self:_sendToPlayers('Round:Completed', GetOtherTeam(p.team)) then
     self:stopMatch()
@@ -402,23 +429,10 @@ function Match:_onPlayerKilled(player)
   self.round = self.round + 1
   self.status = Status.ROUND_ENDED
 
-  SetTimeout(function()
+  self._roundEndedWaitTimeout = SetTimeout(function()
     print('Postround wait over, starting round')
     self:_prepareRound()
   end, Match.ROUND_ENDED_WAIT_DURATION)
-
-end
-
-function Match:_onPlayerLeft(player)
-
-  local p = self.players[player.id]
-
-  if p == nil then
-    return
-  end
-
-  self.players[player.id] = nil
-  self:stopMatch()
 
 end
 
@@ -426,17 +440,17 @@ function Match:_onDamageDealt(hook, soldier, info, giverInfo)
 
   if self.status == Status.ROUND_IN_PROGRESS then
 
-    self:_sendToPlayers('Damage:Dealt', {
-      giverId =  giverInfo.giver ~= nil and giverInfo.giver.id or nil,
-      receiverId = soldier.player.id,
-      amount = math.min(soldier.health, info.damage)
-    })
+    local giverId = giverInfo.giver ~= nil and giverInfo.giver.id or nil
+    local amount = math.min(soldier.health, info.damage)
+    local lethal = info.damage >= soldier.health
+
+    self:_sendToPlayers('Damage:Dealt', giverId, soldier.player.id, amount, lethal)
 
   end
 
 end
 
-function Match:_sendToPlayers(eventName, args)
+function Match:_sendToPlayers(eventName, ...)
 
   local players = {}
 
@@ -453,7 +467,7 @@ function Match:_sendToPlayers(eventName, args)
   end
 
   for _,v in pairs(players) do
-    NetEvents:SendTo(eventName, v, args)
+    NetEvents:SendTo(eventName, v, ...)
   end
 
   return true

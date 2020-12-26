@@ -20,9 +20,6 @@ else
 
   Commands.registerLobbyCommands(lobby)
 
-  WebUI:Init()
-  WebUI:Show()
-
 end
 
 

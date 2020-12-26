@@ -1,0 +1,118 @@
+.scoreboard-wrapper {
+  position: fixed;
+  margin-left: 91.48vh;
+  margin-top: 11.11vh;
+}
+
+.scoreboard-head > *:first-child {
+  width: 35.6vh;
+}
+
+.scoreboard-head > * {
+  width: 7.87vh;
+  text-align: left;
+}
+
+.scoreboard {
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-start;
+  align-items: flex-end;
+}
+
+.score-indicator {
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  margin-right: 5.83vh;
+}
+
+.score-indicator h3 {
+  font-size: 1.29vh;
+  line-height: 1.29vh;
+  text-align: right;
+}
+
+.score-indicator h1 {
+  font-size: 3.7vh;
+  line-height: 3.7vh;
+  margin-top: 0.74vh;
+}
+
+.match-info {
+  border-bottom: 1px solid white;
+}
+
+.match-info > h1 {
+  font-size: 1.85vh;
+}
+
+.match-info-content {
+  margin-bottom: 1px;
+  display: flex;
+}
+
+.match-info-content > *:first-child {
+  padding-right: 1.66vh;
+  border-right: 1px solid white;
+}
+
+.match-info-content > *:nth-child(2) {
+  padding-left: 1.66vh;
+}
+
+.match-info-content > *:last-of-type {
+  margin-left: auto;
+}
+
+.scoreboard-table {
+  border-spacing: 0;
+}
+
+.scoreboard-table.our {
+  border: 0.6vh solid rgb(35, 58, 71, 0.75);
+}
+
+.scoreboard-table.their {
+  border: 0.6vh solid rgb(56, 15, 20, 0.75);
+}
+
+.scoreboard-head {
+  color: white;
+}
+
+.scoreboard-row {
+  opacity: 0.75;
+  height: 2.59vh;
+  padding: 0.46vh;
+}
+
+.scoreboard-body.our > *:nth-child(even) {
+  background-color: rgb(35, 58, 71);
+}
+
+.scoreboard-body.our > *:nth-child(odd) {
+  background-color: rgb(40, 70, 87);
+}
+
+.scoreboard-body.their > *:nth-child(even) {
+  background-color: rgb(56, 15, 20);
+}
+
+.scoreboard-body.their > *:nth-child(odd) {
+  background-color: rgb(78, 25, 30);
+}
+
+.scoreboard-body td {
+  width: 7.87vh;
+  text-align: left;
+}
+
+.scoreboard-body td.name {
+  width: 37.7vh;
+  padding-left: 9.25vh;
+}
+
+.scoreboard.their {
+  margin-top: 6.66vh;
+}

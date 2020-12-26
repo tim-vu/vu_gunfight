@@ -1,7 +1,6 @@
 import React from 'react';
 
 import './RoundCompleted.css';
-import 'index.css';
 import { RoundsState } from 'store/rounds/types';
 import { connect } from 'react-redux';
 import { AppState } from 'store';
@@ -9,8 +8,6 @@ import { getOtherTeam, Team } from 'models/Team';
 import { MatchState } from 'store/match/types';
 import Banner from 'components/Banner/Banner';
 import { Result } from 'models/Result';
-
-const MAX_ROUNDS = 10;
 
 interface RoundCompletedProps {
   rounds: RoundsState;
@@ -26,7 +23,7 @@ const RoundCompleted: React.FC<RoundCompletedProps> = ({ rounds, game }) => {
   const resultText = rounds.isLastRoundWin ? 'ROUND WIN' : 'ROUND LOSS';
   const result = rounds.isLastRoundWin ? Result.Win : Result.Loss;
 
-  const switchingSides = rounds.rounds % 2 == 0;
+  const switchingSides = rounds.rounds % 2 === 0;
 
   return (
     <div className="w-full h-full flex flex-col justify-start items-center">

@@ -8,6 +8,7 @@ export const DAMAGE_DEALT = 'DAMAGE_DEALT';
 
 export interface MatchState {
   team: Team;
+  map: string;
   spectating: boolean;
   playerInfo: PlayerInfo[];
   ourHealth: number;
@@ -17,6 +18,7 @@ export interface MatchState {
 export interface MatchStarting {
   type: typeof MATCH_STARTING;
   team: Team;
+  map: string;
   players: Player[]
 }
 
@@ -25,7 +27,7 @@ export interface DamageDealt {
   giverId: number | null;
   receiverId: number;
   amount: number;
+  lethal: boolean
 }
 
-
-export type MatchActions = MatchStarting | RoundStarting | RoundCompleted | DamageDealt 
+export type MatchActions = MatchStarting | RoundStarting | RoundCompleted | DamageDealt

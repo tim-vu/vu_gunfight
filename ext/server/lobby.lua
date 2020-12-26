@@ -1,5 +1,6 @@
 require('__shared/common')
 local Match = require('gunfight/match')
+local Team = require('__shared/team')
 
 local Status = require('__shared/status')
 
@@ -25,7 +26,11 @@ function Lobby.static:matchToMatchVm(match)
   }
 
   for _,v in pairs(match.players) do
-    table.insert(matchVm.players, { id = v.id, team = v.team})
+    table.insert(matchVm.players, { id = v.id, team = v.team, name = v.name})
+  end
+
+  if #matchVm.players == 0 then
+    matchVm.players = nil
   end
 
   return matchVm
@@ -43,11 +48,13 @@ function Lobby:__init(maps)
     self.matches[k] = Match(k, v)
   end
 
-  Events:Subscribe('Player:Authenticated', self, self._onPlayerAuthenticated)
+  Events:Subscribe('Player:Created', self, self._onPlayerCreated)
 
   Events:Subscribe('Match:Ended', self, self._onMatchEnded)
+  Events:Subscribe('Match:PlayerLeft', self, self._onPlayerLeftMatch)
+  Events:Subscribe('Match:RoundCompleted', self, self._onRoundCompleted)
 
-  NetEvents:Subscribe('Lobby:Refresh', self, self._refresh)
+  NetEvents:Subscribe('Lobby:Ready', self, self._refresh)
   NetEvents:Subscribe('Lobby:Join', self, self._joinMatch)
   NetEvents:Subscribe('Lobby:JoinAny', self, self._joinAnyMatch)
   NetEvents:Subscribe('Lobby:Leave', self, self._leaveMatch)
@@ -85,7 +92,7 @@ function Lobby:_joinMatch(player, mapId, team)
     return
   end
 
-  NetEvents:SendTo('Lobby:Joined', player, mapId, team)
+  NetEvents:Broadcast('Lobby:PlayerJoined', mapId, match.players[player.id])
 
 end
 
@@ -94,7 +101,7 @@ function Lobby:_joinAnyMatch(player)
   local sortedMatches = { }
 
   for k,v in pairs(self.matches) do
-    
+
     if not v:IsFull() then
       table.insert(sortedMatches, k)
     end
@@ -102,7 +109,7 @@ function Lobby:_joinAnyMatch(player)
   end
 
   if #sortedMatches == 0 then
-    NetEvents:SendTo('Lobby:JoinFailed', 'No matches available')
+    NetEvents:SendTo('Lobby:JoinFailed', player, 'No matches available')
   end
 
   local compareMapId = function(a, b)
@@ -111,9 +118,10 @@ function Lobby:_joinAnyMatch(player)
 
   table.sort(sortedMatches, compareMapId)
 
-  local mapId = sortedMatches[1]
+  local match = self.matches[sortedMatches[1]]
+  local team = match:IsTeamFull(Team.US) and Team.RU or Team.US
 
-  self:_joinMatch(mapId, player)
+  self:_joinMatch(player, match.mapId, team)
 
 end
 
@@ -123,18 +131,18 @@ function Lobby:_leaveMatch(player)
 
     if v.players[player.id] ~= nil then
       v:Leave(player)
-      NetEvents:SendTo('Lobby:Left')
+      NetEvents:SendTo('Lobby:Left', player)
       return
     end
 
   end
 
-  NetEvents:SendTo('Match:LeaveFailed', 'The player was not in a match')
+  NetEvents:SendTo('Lobby:LeaveFailed', player, 'The player was not in a match')
 
 end
 
 
-function Lobby:_onPlayerAuthenticated(player)
+function Lobby:_onPlayerCreated(player)
 
   local matches = { }
 
@@ -150,13 +158,22 @@ function Lobby:_onPlayerAuthenticated(player)
 
 end
 
+function Lobby:_onPlayerLeftMatch(mapId, playerId)
+  NetEvents:Broadcast('Lobby:PlayerLeft', mapId, playerId)
+end
+
+function Lobby:_onRoundCompleted(mapId)
+  local match = self.matches[mapId]
+  NetEvents:Broadcast('Lobby:RoundCompleted', mapId, match.scores)
+end
+
 function Lobby:_onMatchEnded(mapId)
 
   local oldMatch = self.matches[mapId]
 
   self.matches[mapId] = Match(oldMatch.mapId, oldMatch.map)
 
-  NetEvents:Broadcast('Lobby:MatchUpdate', Lobby:matchToMatchVm(self.matches[mapId]))
+  NetEvents:Broadcast('Lobby:MatchEnded', mapId)
 
 end
 

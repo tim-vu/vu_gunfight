@@ -14,9 +14,14 @@ else
   Lobby(Maps)
 end
 
-NetEvents:Subscribe('Spawn', function(player)
+NetEvents:Subscribe('Spawn', function(player, loadoutIndex)
 
-  local loadout = Equipment.LOADOUTS[1]
+  local loadout = Equipment.LOADOUTS[tonumber(loadoutIndex)]
+
+  if loadout == nil then
+    return
+  end
+
 
   local soldier = player.soldier
 

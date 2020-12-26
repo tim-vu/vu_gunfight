@@ -1,7 +1,6 @@
 import React from 'react';
 
-import 'index.css';
-import { RoundsState, RoundStarting } from 'store/rounds/types';
+import { RoundsState } from 'store/rounds/types';
 import { connect } from 'react-redux';
 import { AppState } from 'store';
 import { getOtherTeam, Team } from 'models/Team';
@@ -10,7 +9,7 @@ import Banner from 'components/Banner/Banner';
 import { Result } from 'models/Result';
 
 const MAX_ROUNDS = 10;
-const ROUNDS_TO_WIN = MAX_ROUNDS / 2 + 1;
+const ROUNDS_TO_WIN = MAX_ROUNDS / 2;
 
 interface RoundCompletedProps {
   rounds: RoundsState;
@@ -24,15 +23,12 @@ const getCause = (win: boolean, ourTeam: Team) => {
 
 const getResult = (rounds: RoundsState) => {
   if (rounds.wins > ROUNDS_TO_WIN) return Result.Win;
-  if (rounds.losses > ROUNDS_TO_WIN) return Result.Loss;
-
-  return Result.Draw;
+  return Result.Loss;
 };
 
 const RESULT_TO_TEXT = {
   [Result.Win]: 'VICTORY!',
   [Result.Loss]: 'DEFEAT!',
-  [Result.Draw]: 'DRAW!',
 };
 
 const RoundCompleted: React.FC<RoundCompletedProps> = ({ rounds, game }) => {

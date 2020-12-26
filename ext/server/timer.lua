@@ -45,14 +45,34 @@ end
 
 function SetTimeout(func, delay)
 
-  table.insert(events, {
+  local timeout = {
     callback = func,
     timestamp = os.clock() + delay,
     interval = false,
-  })
+  }
+
+  table.insert(events, timeout)
 
   if #events == 1 then
     engineUpdateEvent = Events:Subscribe('Engine:Update', onEngineUpdate)
+  end
+
+  return timeout
+end
+
+function ClearTimeout(timeout)
+
+  for k = #events, 1, -1 do
+
+    if events[k] == timeout then
+      table.remove(events, k)
+    end
+
+  end
+
+  if #events == 0 and engineUpdateEvent ~= nil then
+    engineUpdateEvent:Unsubscribe()
+    engineUpdateEvent = nil
   end
 
 end

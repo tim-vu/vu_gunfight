@@ -1,0 +1,108 @@
+:root {
+  --lobby-header-color: rgba(0, 0, 0, 0.75);
+  --lobby-content-color: rgba(0, 0, 0, 0.45);
+}
+
+.matchdisplay {
+  width: 44.44vh;
+  display: inline-block;
+}
+
+.matchdisplay-map {
+  height: 6.01vh;
+  background-color: var(--lobby-header-color);
+}
+
+.matchdisplay-map h1 {
+  font-size: 4.44vh;
+  color: #ffffff;
+  font-weight: 700;
+  text-align: center;
+}
+
+.matchdisplay-status {
+  width: 100%;
+  background-color: var(--lobby-content-color);
+  padding: 1.85vh;
+}
+
+.matchdisplay-status > p:not(:last-child) {
+  margin-bottom: 1.85vh;
+}
+
+.matchdisplay-team {
+  margin-top: 1.85vh;
+}
+
+.matchdisplay-team-header {
+  height: 3.14vh;
+  background-color: var(--lobby-header-color);
+  padding-left: 1.85vh;
+  padding-right: 1.85vh;
+  display: flex;
+  align-items: center;
+}
+
+.matchdisplay-team-header.us {
+  border-left: 0.37vh solid rgba(67, 93, 225, 1);
+}
+
+.matchdisplay-team-header.ru {
+  border-left: 0.37vh solid rgb(216, 69, 69, 1);
+}
+
+.matchdisplay-team-header > h3 {
+  vertical-align: middle;
+  font-size: 1.67vh;
+  line-height: 1.67vh;
+  margin-right: 1.67vh;
+}
+
+.matchdisplay-team-header > p {
+  vertical-align: middle;
+  font-size: 1.67vh;
+  line-height: 1.67vh;
+  margin-left: auto;
+}
+
+.matchdisplay-scorecircle {
+  display: inline-block;
+  height: 1.2vh;
+}
+
+.matchdisplay-scorecircle.us {
+  color: #435de1;
+}
+
+.matchdisplay-scorecircle.ru {
+  color: #d84545;
+}
+
+.matchdisplay-scorecircle.other {
+  opacity: 0.75;
+  color: #ffffff;
+}
+
+.matchdisplay-playername {
+  height: 3.14vh;
+  background-color: var(--lobby-content-color);
+  vertical-align: middle;
+  padding-left: 1.85vh;
+  display: flex;
+  align-items: center;
+}
+
+.matchdisplay-playername.taken.us {
+  border-left: 0.37vh solid rgba(67, 93, 225, 1);
+}
+
+.matchdisplay-playername.taken.ru {
+  border-left: 0.37vh solid rgb(216, 69, 69, 1);
+}
+
+.matchdisplay-join {
+  width: 100%;
+  height: 4.07vh;
+  background-color: var(--lobby-content-color);
+  margin-top: 0.28vh;
+}

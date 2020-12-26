@@ -4,13 +4,20 @@ import 'index.css';
 import { Loadout } from 'models/Loadout';
 import { AppState } from 'store';
 import { connect } from 'react-redux';
+import { RouteComponentProps, withRouter } from 'react-router-dom';
 
 interface LoadoutDisplayProps {
   loadout: Loadout;
 }
 
-const LoadoutDisplay: React.FC<LoadoutDisplayProps> = ({ loadout }) => {
-  console.log(loadout);
+const LoadoutDisplay: React.FC<LoadoutDisplayProps & RouteComponentProps> = ({
+  loadout,
+  location,
+}) => {
+  if (location.hash === '#scoreboard') {
+    //hide the loadoutdisplay whenever the keyboard is visible
+    return null;
+  }
 
   return (
     <div className="loadout-display">
@@ -44,4 +51,4 @@ const mapStateToProps = (state: AppState) => ({
   loadout: state.rounds.currentLoadout,
 });
 
-export default connect(mapStateToProps)(LoadoutDisplay);
+export default connect(mapStateToProps)(withRouter(LoadoutDisplay));

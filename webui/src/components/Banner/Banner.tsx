@@ -10,7 +10,6 @@ interface BannerProps {
 const RESULT_TO_CLASS = {
   [Result.Win]: 'win',
   [Result.Loss]: 'loss',
-  [Result.Draw]: 'draw',
 };
 
 const Banner: React.FC<BannerProps> = ({ result, text }) => {

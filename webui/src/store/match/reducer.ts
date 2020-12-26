@@ -6,6 +6,7 @@ import { MatchActions, MatchState } from "./types";
 
 const initialState : MatchState = {
   team: Team.RU,
+  map: "Noshar Canals",
   spectating: false,
   playerInfo: [],
   ourHealth: 200,
@@ -21,13 +22,14 @@ const matchReducer : Reducer<MatchState, MatchActions> = (state : MatchState = i
 
       return {
         ...state,
-        playerInfo: state.playerInfo.map(addDamageToPlayer(action.giverId, action.amount)),
+        playerInfo: state.playerInfo.map(processDamage(action.giverId, action.receiverId, action.amount, action.lethal)),
         ourHealth: receiverIsOurTeam ? state.ourHealth - action.amount : state.ourHealth,
         theirHealth: receiverIsOurTeam ? state.theirHealth : state.theirHealth - action.amount
       }
     case "MATCH_STARTING":
       return {
         ...initialState,
+        map: action.map,
         team: action.team,
         playerInfo: action.players.map(toPlayerInfo)
       }
@@ -47,15 +49,24 @@ const matchReducer : Reducer<MatchState, MatchActions> = (state : MatchState = i
   }
 }
 
-const addDamageToPlayer = (id : number | null, amount : number) => (player : PlayerInfo) => {
+const processDamage = (giverId : number | null, receiverId : number, amount : number, lethal : boolean) => (player : PlayerInfo) => {
 
-  if (id === null || player.id !== id)
-    return player
-  
-  return {
-    ...player,
-    damageDealt: player.damageDealt + amount
+  if (player.id === giverId) {
+    return {
+      ...player,
+      damageDealt: player.damageDealt + amount,
+      kills: lethal ? player.kills + 1 : player.kills
+    }
   }
+  
+  if (player.id === receiverId) {
+    return {
+      ...player,
+      deaths: lethal ? player.deaths + 1 : player.deaths
+    }
+  }
+
+  return player;
 
 } 
 

@@ -30,10 +30,14 @@ local selectWeapon = function(player, weaponSlot, weapon, attachments)
   local weaponContainer = ResourceManager:SearchForDataContainer(weapon)
   local attachmentContainers = {}
 
-  for _, att in pairs(attachments) do
-    local container = ResourceManager:SearchForDataContainer(att);
+  if attachments ~= nil then
 
-    table.insert(attachmentContainers, container)
+    for _, att in pairs(attachments) do
+      local container = ResourceManager:SearchForDataContainer(att);
+
+      table.insert(attachmentContainers, container)
+    end
+
   end
 
   player:SelectWeapon(weaponSlot, weaponContainer, attachmentContainers)

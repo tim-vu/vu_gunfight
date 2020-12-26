@@ -1,7 +1,6 @@
 import React from 'react';
 
 import './HealthIndicator.css';
-import 'index.css';
 import { AppState } from 'store';
 import { connect } from 'react-redux';
 import { MatchState } from 'store/match/types';

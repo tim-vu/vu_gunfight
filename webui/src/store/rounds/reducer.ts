@@ -42,12 +42,12 @@ const roundsReducer : Reducer<RoundsState, RoundsAction> = (state = initialState
     case "ROUND_STARTING":
       return {
         ...state,
+        rounds: state.rounds + 1,
         currentLoadout: action.loadout
       }
     case "ROUND_COMPLETED":
       return {
         ...state,
-        rounds: state.rounds + 1,
         wins: state.wins + (action.win ? 1 : 0),
         losses: state.losses + (action.win ? 0 : 1),
         isLastRoundWin: action.win

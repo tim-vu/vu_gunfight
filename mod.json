@@ -1,10 +1,11 @@
 {
   "Name": "Gunfight",
-  "Description": "TODO",
+  "Description": "A recreation of Modern Warfare's gunfight mode",
   "Version": "1.0.0",
   "HasVeniceEXT": true,
   "HasWebUI": true,
   "Dependencies": {
       "veniceext": "^1.0.0"
-  }
+  },
+  "Tags": ["2v2", "3v3", "gunfight"]
 }
