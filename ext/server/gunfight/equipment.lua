@@ -47,7 +47,7 @@ local WEAPONS = {
     displayName = '.44 Magnum',
     name = 'Weapons/Taurus44/U_Taurus44',
     category = 'Pistol',
-    imageUrl = 'fb://UI/Art/Persistence/Weapons/Taurus'
+    imageUrl = 'fb://UI/Art/Persistence/Weapons/Taurus44'
   }
 
 }
