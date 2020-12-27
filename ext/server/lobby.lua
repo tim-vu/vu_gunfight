@@ -8,8 +8,8 @@ local Lobby = class('Lobby')
 
 function Lobby.static:compareMatch(a, b)
 
-  local remainingSlotsA = a.map.teamSize * Match.TEAMS - #pairs(a.players)
-  local remainingSlotsB = b.map.teamSize * Match.TEAMS - #pairs(b.players)
+  local remainingSlotsA = a.map.teamSize * Match.TEAMS - GetCount(a.players)
+  local remainingSlotsB = b.map.teamSize * Match.TEAMS - GetCount(b.players)
 
   return remainingSlotsA < remainingSlotsB
 
@@ -113,7 +113,7 @@ function Lobby:_joinAnyMatch(player)
   end
 
   local compareMapId = function(a, b)
-    return Lobby.compareMatch(self.matches[a], self.matches[b])
+    return Lobby:compareMatch(self.matches[a], self.matches[b])
   end
 
   table.sort(sortedMatches, compareMapId)
