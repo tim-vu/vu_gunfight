@@ -2,49 +2,42 @@ require('gunfight/equipment')
 require('gunfight/gamesettings')
 
 local Lobby = require('lobby')
-local Spawning = require('gunfight/spawning')
-local Team = require('__shared/team')
 local Settings = require('__shared/settings')
 local Maps = require('__shared/maps')
-local Equipment = require('gunfight/equipment')
+local registerSetupCommands = require('commands')
+local version = require('version')
+
+local VERSION_URL = 'https://raw.githubusercontent.com/tim-vu/vu_gunfight/master/mod.json'
+
+local printOutOfDateMessage = function()
+  print('================================================')
+  print('You are running an outdated version of Gunfight!')
+  print('================================================')
+end
+
+local response = Net:GetHTTP(VERSION_URL)
+
+if response == nil then
+  print('Unable to check for updates')
+else
+  local latestVersion = json.decode(response.body).Version
+
+  if latestVersion > version then
+    printOutOfDateMessage()
+    printOutOfDateMessage()
+    printOutOfDateMessage()
+  else
+    print('Up to date')
+  end
+
+end
+
 
 if Settings.setup then
   print('Setup mode enabled')
+  registerSetupCommands()
 else
   Lobby(Maps)
 end
 
-NetEvents:Subscribe('Spawn', function(player, loadoutIndex)
-
-  local loadout = Equipment.LOADOUTS[tonumber(loadoutIndex)]
-
-  if loadout == nil then
-    return
-  end
-
-
-  local soldier = player.soldier
-
-  if soldier == nil then
-
-    -- Update position
-    Spawning.spawnSoldier(player, loadout,
-    LinearTransform(
-      Vec3(1, 0, 0),
-      Vec3(0, 1, 0),
-      Vec3(0, 0, 1),
-      Vec3(-354.525391, 70.436325, 245.196289)
-    ), Team.US)
-    return
-  end
-
-  local transform = player.soldier.transform
-
-  if soldier.isAlive then
-    soldier:Kill()
-  end
-
-  Spawning.spawnSoldier(player, loadout, transform, Team.US)
-
-end)
 
