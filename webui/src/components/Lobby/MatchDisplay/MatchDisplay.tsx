@@ -22,11 +22,15 @@ const toPlayerRows = (players: Player[], teamSize: number) => {
   let rows = players.slice(0, MAX_TEAM_SIZE).map(toPlayerRow);
 
   for (let i = rows.length; i < teamSize; i++) {
-    rows.push(<li className="matchdisplay-playername">Waiting for player</li>);
+    rows.push(
+      <li key={10 + i} className="matchdisplay-playername">
+        Waiting for player
+      </li>
+    );
   }
 
   for (let i = rows.length; i < MAX_TEAM_SIZE; i++) {
-    rows.push(<li className="matchdisplay-playername"></li>);
+    rows.push(<li key={20 + i} className="matchdisplay-playername"></li>);
   }
 
   return rows;
@@ -36,7 +40,10 @@ const toPlayerRow = (player: Player) => {
   const className = player.team === Team.US ? 'us' : 'ru';
 
   return (
-    <li className={'matchdisplay-playername taken ' + className}>
+    <li
+      key={player.id}
+      className={'matchdisplay-playername taken ' + className}
+    >
       {player.name}
     </li>
   );

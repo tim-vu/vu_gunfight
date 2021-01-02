@@ -1,5 +1,5 @@
 require('__shared/common.lua')
-require('timer')
+require('__shared/timer')
 
 local Spawning = require('gunfight/spawning')
 local Equipment = require('gunfight/equipment')

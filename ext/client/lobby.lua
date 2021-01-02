@@ -1,13 +1,24 @@
+require('__shared/timer')
+
 local Team = require('__shared/team')
+
 local Lobby = class('Lobby')
+
+Lobby.static.LEAVE_TOAST_DELAY = 5
+Lobby.static.LEAVE_HOLD_DURATION = 3
 
 function Lobby:__init()
 
   self.init = false
+  self.lastToastTimestamp = 0
+  self.leaveTimeout = nil
+  self.open = true
 
   Events:Subscribe('WebUI:JoinMatch', self, self._joinMatch)
   Events:Subscribe('WebUI:JoinAnyMatch', self, self._joinAnyMatch)
   Events:Subscribe('WebUI:LeaveMatch', self, self._leaveMatch)
+  Hooks:Install('UI:PushScreen', 1, self, self._onUIPushScreen)
+  Events:Subscribe('Client:UpdateInput', self, self._onUpdateInput)
 
   NetEvents:Subscribe('Lobby:Init', self, self._initLobby)
   NetEvents:Subscribe('Lobby:PlayerJoined', self, self._onPlayerJoined)
@@ -18,6 +29,7 @@ function Lobby:__init()
   NetEvents:Subscribe('Lobby:RoundCompleted', self, self._onRoundCompleted)
 
   Events:Subscribe('Player:Connected', self, self._onPlayerConnected)
+  Events:Subscribe('Lobby:Show', self, self._showLobby)
 
 end
 
@@ -63,16 +75,68 @@ function Lobby:_initLobby(matches)
   end
 
   WebUI:Init()
-  WebUI:BringToFront()
 
   local call = string.format('initializeLobby("%s", %d, %s)', player.name, player.id, json.encode(matchesArray))
 
   print(call)
 
   WebUI:ExecuteJS(call)
+
+  self:_showLobby()
 end
 
-function Lobby:_onExtensionLoaded(mathces)
+
+function Lobby:_showLobby()
+  WebUI:ExecuteJS('showLobby()')
+  WebUI:EnableMouse()
+end
+
+function Lobby:_onUIPushScreen(hook, screen, priority, parentGraph)
+
+  local screen = UIGraphAsset(screen)
+
+  if screen.name == 'UI/Flow/Screen/SpawnScreenPC' then
+    self.open = true
+    return
+  end
+
+  if screen.name == 'UI/Flow/Screen/HudTDMScreen' then
+    self.open = false
+    return
+  end
+end
+
+function Lobby:_onUpdateInput(deltaTime)
+
+  if not self.open then
+    return
+  end
+  if InputManager:WentKeyUp(InputDeviceKeys.IDK_Escape) then
+
+    local now = os.clock()
+
+    if self.lastToastTimestamp + Lobby.LEAVE_TOAST_DELAY < now then
+      print('Showing toast')
+      WebUI:ExecuteJS('showLeaveGameToast()')
+      self.lastToastTimestamp = now
+      return
+    end
+
+    return
+  end
+
+  if InputManager:WentKeyDown(InputDeviceKeys.IDK_Escape) and self.leaveTimeout == nil then
+    print('Starting leave')
+    self.leaveTimeout = SetTimeout(function()
+      NetEvents:Send('Lobby:LeaveGame')
+    end, Lobby.LEAVE_HOLD_DURATION)
+    return
+  end
+
+  if not InputManager:IsKeyDown(InputDeviceKeys.IDK_Escape) and self.leaveTimeout ~= nil then
+    print('Stopping leave')
+    ClearTimeout(self.leaveTimeout)
+  end
 
 
 end
@@ -143,9 +207,5 @@ function Lobby:_onMatchEnded(mapId)
   WebUI:ExecuteJS(call)
 
 end
-
-
-
-
 
 return Lobby

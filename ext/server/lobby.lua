@@ -48,26 +48,27 @@ function Lobby:__init(maps)
     self.matches[k] = Match(k, v)
   end
 
-  Events:Subscribe('Player:Created', self, self._onPlayerCreated)
-
   Events:Subscribe('Match:Ended', self, self._onMatchEnded)
   Events:Subscribe('Match:PlayerLeft', self, self._onPlayerLeftMatch)
   Events:Subscribe('Match:RoundCompleted', self, self._onRoundCompleted)
 
-  NetEvents:Subscribe('Lobby:Ready', self, self._refresh)
+  NetEvents:Subscribe('Lobby:Ready', self, self._lobbyReady)
   NetEvents:Subscribe('Lobby:Join', self, self._joinMatch)
   NetEvents:Subscribe('Lobby:JoinAny', self, self._joinAnyMatch)
   NetEvents:Subscribe('Lobby:Leave', self, self._leaveMatch)
+  NetEvents:Subscribe('Lobby:LeaveGame', self, self._leaveGame)
 
 end
 
-function Lobby:_refresh(player)
+function Lobby:_lobbyReady(player)
 
   local matches = { }
 
   for _,v in pairs(self.matches) do
     table.insert(matches, Lobby:matchToMatchVm(v))
   end
+
+  player:Fade(1, false)
 
   NetEvents:SendTo('Lobby:Init', player, matches)
 end
@@ -141,21 +142,8 @@ function Lobby:_leaveMatch(player)
 
 end
 
-
-function Lobby:_onPlayerCreated(player)
-
-  local matches = { }
-
-  for k,v in pairs(self.matches) do
-
-    print('Map id: ' .. k)
-
-    table.insert(matches, Lobby:matchToMatchVm(v))
-  end
-
-  print('Sending maps')
-  NetEvents:SendTo('Lobby:Init', player, matches)
-
+function Lobby:_leaveGame(player)
+  player:Kick('See you next time!')
 end
 
 function Lobby:_onPlayerLeftMatch(mapId, playerId)

@@ -2,7 +2,9 @@ import { Player } from "models/Player";
 import { Team } from "models/Team";
 import { Store } from "redux";
 import { Action, AppState } from "store";
+import { History } from "history";
 import { InitializeLobby, INITIALIZE_LOBBY, JoinAnyMatch, JoinedMatch, JOINED_MATCH, JoinMatch, LeaveMatch, LeftMatch, LEFT_MATCH, ResetMatch, RESET_MATCH, UpdateScore, UPDATE_SCORE } from "./types";
+import { toast } from "react-toastify";
 
 declare const window: any;
 declare const WebUI: any;
@@ -42,7 +44,7 @@ export function leaveMatch() : LeaveMatch {
   }
 }
 
-export default function registerActionCreators(store : Store<AppState, Action>) {
+export default function registerActionCreators(store : Store<AppState, Action>, history : History) {
 
   window.initializeLobby = (name : string, playerId : number, matches : any[]) => {
 
@@ -68,6 +70,10 @@ export default function registerActionCreators(store : Store<AppState, Action>) 
 
     store.dispatch(action);
 
+  }
+
+  window.showLeaveGameToast = () => {
+    toast.dark('Hold ESC to leave the game');
   }
 
   window.joinedMatch = (matchId : string, player : Player) => {

@@ -1,7 +1,7 @@
 import React from 'react';
+import './App.css';
 import RoundIndicator from '../RoundIndicator/RoundIndicator';
 import { Route } from 'react-router-dom';
-import './App.css';
 import RoundCompleted from 'components/RoundCompleted/RoundCompleted';
 import LoadoutDisplay from 'components/LoadoutDisplay/LoadoutDisplay';
 import Countdown from 'components/RoundIndicator/Countdown/Countdown';
