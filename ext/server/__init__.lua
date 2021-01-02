@@ -1,6 +1,3 @@
-require('gunfight/equipment')
-require('gunfight/gamesettings')
-
 local Lobby = require('lobby')
 local Settings = require('__shared/settings')
 local Maps = require('__shared/maps')
@@ -15,7 +12,7 @@ local printOutOfDateMessage = function()
   print('================================================')
 end
 
-ServerUtils.SetCustomMapName('Gunfight')
+ServerUtils:SetCustomMapName('Gunfight')
 
 local response = Net:GetHTTP(VERSION_URL)
 

@@ -1,6 +1,6 @@
 local Equipment = class('Equipment')
 
-local WEAPONS = {
+Equipment.static.WEAPONS = {
   M98B = {
     displayName = 'M98B',
     name = 'Weapons/Model98B/U_M98B',
@@ -64,7 +64,7 @@ local WEAPONS = {
 
 }
 
-local ACCESSORIES = {
+Equipment.static.ACCESSORIES = {
   KNIFE = {
     displayName = 'Knife',
     name = "Weapons/Knife/U_Knife",
@@ -83,7 +83,7 @@ local ACCESSORIES = {
   }
 }
 
-local ATTACHMENTS = {
+Equipment.static.ATTACHMENTS = {
 
   M98B = {
     RIFLE_SCOPE = 'Weapons/Model98B/U_M98B_Rifle_Scope'
@@ -94,89 +94,6 @@ local ATTACHMENTS = {
     RED_DOT = 'Weapons/M16A4/U_M16A4_RX01'
   }
 
-}
-
-Equipment.static.LOADOUTS = {
-  {
-    primary = {
-      weapon = WEAPONS.M98B,
-      attachments = {
-        ATTACHMENTS.M98B.RIFLE_SCOPE
-      }
-    },
-    secondary = {
-      weapon = WEAPONS.R870,
-      attachments = {}
-    },
-    accessories = {
-      ACCESSORIES.KNIFE
-    }
-  },
-  {
-    primary = {
-      weapon = WEAPONS.M16A4,
-      attachments = {
-        ATTACHMENTS.M16A4.FOREGRIP,
-        ATTACHMENTS.M16A4.RED_DOT,
-        ATTACHMENTS.M16A4.HEAVY_BARREL
-      }
-    },
-    secondary = {
-      weapon = WEAPONS.M9,
-      attachments = {
-
-      }
-    },
-    accessories = {
-      ACCESSORIES.KNIFE,
-      ACCESSORIES.CROSSBOW
-    }
-  },
-  {
-    primary = {
-      weapon = WEAPONS.ASVAL,
-      attachments = {
-
-      }
-    },
-    secondary = {
-      weapon = WEAPONS.G17,
-      attachments = {
-
-      }
-    }
-  },
-  {
-    primary = {
-      weapon = WEAPONS.UMP45,
-      attachments = {
-
-      }
-    },
-    secondary = {
-      weapon = WEAPONS.MAGNUM,
-      attachments = {
-
-      }
-    },
-    accessories = {
-      ACCESSORIES.C4
-    }
-  },
-  {
-    primary = {
-      weapon = WEAPONS.R870,
-      attachments = {
-
-      }
-    },
-    secondary = {
-      weapon = WEAPONS.MP412REX,
-      attachments = {
-
-      }
-    }
-  }
 }
 
 return Equipment

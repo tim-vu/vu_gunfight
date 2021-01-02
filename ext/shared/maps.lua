@@ -1,4 +1,89 @@
 require('__shared/math/rectangle')
+local Equipment = require('__shared/equipment')
+
+local loadouts = {
+  {
+    primary = {
+      weapon = Equipment.WEAPONS.M98B,
+      attachments = {
+        Equipment.ATTACHMENTS.M98B.RIFLE_SCOPE
+      }
+    },
+    secondary = {
+      weapon = Equipment.WEAPONS.R870,
+      attachments = {}
+    },
+    accessories = {
+      Equipment.ACCESSORIES.KNIFE
+    }
+  },
+  {
+    primary = {
+      weapon = Equipment.WEAPONS.M16A4,
+      attachments = {
+        Equipment.ATTACHMENTS.M16A4.FOREGRIP,
+        Equipment.ATTACHMENTS.M16A4.RED_DOT,
+        Equipment.ATTACHMENTS.M16A4.HEAVY_BARREL
+      }
+    },
+    secondary = {
+      weapon = Equipment.WEAPONS.M9,
+      attachments = {
+
+      }
+    },
+    accessories = {
+      Equipment.ACCESSORIES.KNIFE,
+      Equipment.ACCESSORIES.CROSSBOW
+    }
+  },
+  {
+    primary = {
+      weapon = Equipment.WEAPONS.ASVAL,
+      attachments = {
+
+      }
+    },
+    secondary = {
+      weapon = Equipment.WEAPONS.G17,
+      attachments = {
+
+      }
+    }
+  },
+  {
+    primary = {
+      weapon = Equipment.WEAPONS.UMP45,
+      attachments = {
+
+      }
+    },
+    secondary = {
+      weapon = Equipment.WEAPONS.MAGNUM,
+      attachments = {
+
+      }
+    },
+    accessories = {
+      Equipment.ACCESSORIES.C4
+    }
+  },
+  {
+    primary = {
+      weapon = Equipment.WEAPONS.R870,
+      attachments = {
+
+      }
+    },
+    secondary = {
+      weapon = Equipment.WEAPONS.MP412REX,
+      attachments = {
+
+      }
+    }
+  }
+
+}
 
 return {
 
@@ -37,7 +122,8 @@ return {
     },
     --Vec3(-164.212891, 59.258595, -363.029297)
     --Vec3(-235.319336, 65.107246, -483.191406)
-    area = Rectangle(-235.319336, -483.191406, -164.212891, -363.029297)
+    area = Rectangle(-235.319336, -483.191406, -164.212891, -363.029297),
+    loadouts = loadouts
   },
   ['METRO_2'] = {
     displayName = 'Metro street',
@@ -74,7 +160,8 @@ return {
     },
     --Vec3(-271.088867, 64.524536, -499.358398)
     --Vec3(-212.502930, 65.086716, -517.129883)
-    area = Rectangle(-290.088867, -537.129883, -192.502930, -479.358398)
+    area = Rectangle(-290.088867, -537.129883, -192.502930, -479.358398),
+    loadouts = loadouts
   }
 
 }
