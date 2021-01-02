@@ -12,7 +12,7 @@ local printOutOfDateMessage = function()
   print('================================================')
 end
 
-ServerUtils:SetCustomMapName('Gunfight')
+ServerUtils:SetCustomGameModeName('Gunfight')
 
 local response = Net:GetHTTP(VERSION_URL)
 
