@@ -48,6 +48,18 @@ local WEAPONS = {
     name = 'Weapons/Taurus44/U_Taurus44',
     category = 'Pistol',
     imageUrl = 'fb://UI/Art/Persistence/Weapons/Taurus44'
+  },
+  P90 = {
+    displayName = 'P90',
+    name = 'Weapons/P90/U_P90',
+    category = 'TODO',
+    imageUrl = 'fb://UI/Art/Persistence/Weapons/P90'
+  },
+  MP412REX = {
+    displayName = 'MP412 Rex',
+    name = 'Weapons/MP412Rex/U_MP412Rex',
+    category = 'Pistol',
+    imageUrl = 'fb://UI/Art/Persistence/Weapons/MP412Rex'
   }
 
 }
@@ -56,15 +68,30 @@ local ACCESSORIES = {
   KNIFE = {
     displayName = 'Knife',
     name = "Weapons/Knife/U_Knife",
-    category = 'Melee',
-    imageUrl = 'fb://UI/Art/Persistence/Weapons/Knife_small'
+  },
+  CROSSBOW = {
+    displayName = 'XBOW',
+    name = 'Weapons/XP4_Crossbow_Prototype/U_Crossbow_Scoped_Cobra',
+  },
+  C4 = {
+    displayName = 'C4',
+    name = 'Weapons/Gadgets/C4/U_C4',
+  },
+  CLAYMORE = {
+    displayName = 'Claymore',
+    name = 'Weapons/Gadgets/Claymore/',
   }
 }
 
 local ATTACHMENTS = {
 
   M98B = {
-    rifleScope = 'Weapons/Model98B/U_M98B_Rifle_Scope'
+    RIFLE_SCOPE = 'Weapons/Model98B/U_M98B_Rifle_Scope'
+  },
+  M16A4 = {
+    FOREGRIP = 'Weapons/M16A4/U_M16A4_Foregrip',
+    HEAVY_BARREL = 'Weapons/M16A4/U_M16A4_HeavyBarrel',
+    RED_DOT = 'Weapons/M16A4/U_M16A4_RX01'
   }
 
 }
@@ -74,7 +101,7 @@ Equipment.static.LOADOUTS = {
     primary = {
       weapon = WEAPONS.M98B,
       attachments = {
-        ATTACHMENTS.M98B.rifleScope
+        ATTACHMENTS.M98B.RIFLE_SCOPE
       }
     },
     secondary = {
@@ -89,7 +116,9 @@ Equipment.static.LOADOUTS = {
     primary = {
       weapon = WEAPONS.M16A4,
       attachments = {
-
+        ATTACHMENTS.M16A4.FOREGRIP,
+        ATTACHMENTS.M16A4.RED_DOT,
+        ATTACHMENTS.M16A4.HEAVY_BARREL
       }
     },
     secondary = {
@@ -97,6 +126,10 @@ Equipment.static.LOADOUTS = {
       attachments = {
 
       }
+    },
+    accessories = {
+      ACCESSORIES.KNIFE,
+      ACCESSORIES.CROSSBOW
     }
   },
   {
@@ -122,6 +155,23 @@ Equipment.static.LOADOUTS = {
     },
     secondary = {
       weapon = WEAPONS.MAGNUM,
+      attachments = {
+
+      }
+    },
+    accessories = {
+      ACCESSORIES.C4
+    }
+  },
+  {
+    primary = {
+      weapon = WEAPONS.R870,
+      attachments = {
+
+      }
+    },
+    secondary = {
+      weapon = WEAPONS.MP412REX,
       attachments = {
 
       }
