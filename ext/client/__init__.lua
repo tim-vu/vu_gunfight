@@ -1,4 +1,3 @@
-require('gunfight/deathcam')
 require('gunfight/match')
 local Lobby = require('lobby')
 
@@ -21,6 +20,4 @@ else
   Commands.registerLobbyCommands(lobby)
 
 end
-
-
 

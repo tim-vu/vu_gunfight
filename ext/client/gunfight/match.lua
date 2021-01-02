@@ -3,9 +3,11 @@ class('Match')
 function Match:__init()
 
   self.team = nil
+  self.deathCamera = nil
 
   Hooks:Install('UI:PushScreen', 1, self, self._onUIPushScreen)
-  Events:Subscribe('Client:UpdateInput', self, self._onUpdateInput)
+  Events:Subscribe('Client:UpdateInput', self, self._handleKeyboard)
+  Events:Subscribe('Client:UpdateInput', self, self._handleDeathCamera)
 
   NetEvents:Subscribe('Match:Joined', self, self._onMatchJoined)
   NetEvents:Subscribe('Match:Starting', self, self._onMatchStarting)
@@ -54,15 +56,9 @@ function Match:_onMatchCompleted(winningTeam)
 end
 
 function Match:_onMatchEnded()
-
-  local call = 'matchStopped()'
-
-  self.team = nil
-
-  print(call)
-
-  WebUI:ExecuteJS(call)
-  WebUI:EnableMouse()
+  print('Match ended')
+  self:_clearCam()
+  Events:Dispatch('Lobby:Show')
 end
 
 function Match:_onRoundStarting(loadout)
@@ -96,7 +92,7 @@ function Match:_onRoundCompleted(winningTeam)
 
 end
 
-function Match:_onUpdateInput(deltaTime)
+function Match:_handleKeyboard(deltaTime)
 
   if InputManager:WentDown(InputConceptIdentifiers.ConceptScoreboard) then
     print('Showding scoreboard')
@@ -109,6 +105,66 @@ function Match:_onUpdateInput(deltaTime)
     WebUI:ExecuteJS('hideScoreboard()')
     return
   end
+
+end
+
+function Match:_clearCam()
+
+  if self.deathCamera == nil then
+    return
+  end
+
+  self.deathCamera:FireEvent('ReleaseControl')
+  self.deathCamera:Destroy()
+  self.deathCamera = nil
+
+  print('Camera cleared')
+
+end
+
+function Match:_handleDeathCamera(deltaTime)
+
+  local player = PlayerManager:GetLocalPlayer()
+
+  if player == nil then
+    return
+  end
+
+  if player.soldier ~= nil then
+    self:_clearCam()
+    return
+  end
+
+  if player.corpse == nil then
+    self:_clearCam()
+    return
+  end
+
+  if self.deathCamera ~= nil then
+    return
+  end
+
+  print('Creating deathcam')
+
+  local transform = ClientUtils:GetCameraTransform()
+
+  local cameraData = CameraEntityData()
+  cameraData.fov = 90
+  cameraData.transform = transform
+  cameraData.priority = 1
+
+  local entity = EntityManager:CreateEntity(cameraData, transform)
+
+  if entity == nil then
+    print('Unable to create camera')
+    return
+  end
+
+  entity:Init(Realm.Realm_Client, true)
+
+  self.deathCamera = entity
+
+  self.deathCamera:FireEvent('TakeControl')
 
 end
 

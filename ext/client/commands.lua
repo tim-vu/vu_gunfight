@@ -47,14 +47,6 @@ end
 
 local registerLobbyCommands = function(lobby)
 
-  Console:Register('enable', 'Enables the mouse', function(args)
-    WebUI:EnableMouse()
-  end)
-
-  Console:Register('disable', 'Disables the mouse', function(args)
-    
-  end)
-
   Console:Register('ui_init', 'Initializes the ui', function(args)
     WebUI:Init()
     WebUI:BringToFront()

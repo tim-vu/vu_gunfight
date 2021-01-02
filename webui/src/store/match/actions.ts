@@ -33,9 +33,6 @@ function registerActionCreators(history : History) {
     history.push('/match_completed')
   }
 
-  window.matchStopped = () => {
-    history.push('/');
-  }
 
   window.showScoreboard = () => {
     window.location.hash = '#scoreboard';

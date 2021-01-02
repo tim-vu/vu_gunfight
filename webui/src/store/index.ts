@@ -35,7 +35,7 @@ export function registerActionCreators(store : Store<AppState, Action>, history 
 
   registerMatchActionCreators(history);
   registerRoundActionCreators(store, history);
-  registerLobbyActionCreators(store);
+  registerLobbyActionCreators(store, history);
   
 }
 

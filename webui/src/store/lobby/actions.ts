@@ -119,7 +119,10 @@ export default function registerActionCreators(store : Store<AppState, Action>) 
     console.log(action);
 
     store.dispatch(action);
+  }
 
+  window.showLobby = () => {
+    history.push('/');
   }
 
 }
