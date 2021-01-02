@@ -15,6 +15,8 @@ local printOutOfDateMessage = function()
   print('================================================')
 end
 
+ServerUtils.SetCustomMapName('Gunfight')
+
 local response = Net:GetHTTP(VERSION_URL)
 
 if response == nil then
