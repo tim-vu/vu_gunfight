@@ -6,6 +6,8 @@ Events:Subscribe('Partition:Loaded', function(partition)
       local settings = BFServerSettings(v)
       settings:MakeWritable()
       settings.isKillerCameraEnabled = false
+      settings.autoBalance = false
+      settings.isDesertingAllowed = true
     end
 
   end
