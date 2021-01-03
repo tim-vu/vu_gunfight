@@ -10,7 +10,7 @@ local Match = class('Match')
 Match.static.TEAMS = 2
 Match.static.ROUNDS = 11
 Match.static.PREGAME_WAIT_DURATION = 2
-Match.static.ROUND_ENDED_WAIT_DURATION = 3
+Match.static.POSTROUND_WAIT_DURATION = 3
 Match.static.ROUND_ENDED_MOVEMENT_DURATION = 1.5
 Match.static.PREROUND_WAIT_DURATION = 5
 Match.static.POST_MATCH_DURATION = 5
@@ -92,7 +92,7 @@ function Match:Join(player, team)
       table.insert(playersArray, v)
     end
 
-    self:_sendToPlayers('Match:Starting', self.map.displayName, playersArray)
+    self:_sendToPlayers('Match:Starting', self.map.displayName, self.map.teamSize, playersArray)
 
     self._pregameWaitTimeout = SetTimeout(function()
       print('Pregame wait over, preparing round')
@@ -406,7 +406,7 @@ function Match:_onPlayerKilled(player)
           self:stopMatch()
         end, Match.POST_MATCH_DURATION)
 
-        self.status = Status.MATCH_ENDED_WAIT
+        self.status = Status.POSTMATCH_WAIT
 
         return
     end
@@ -428,7 +428,7 @@ function Match:_onPlayerKilled(player)
   self._roundEndedWaitTimeout = SetTimeout(function()
     print('Postround wait over, starting round')
     self:_prepareRound()
-  end, Match.ROUND_ENDED_WAIT_DURATION)
+  end, Match.POSTROUND_WAIT_DURATION)
 
 end
 

@@ -1,9 +1,12 @@
+local Status = require('__shared/status')
+
 class('Match')
 
 function Match:__init()
 
   self.team = nil
   self.deathCamera = nil
+  self.status = Status.NOT_STARTED
 
   Hooks:Install('UI:PushScreen', 1, self, self._onUIPushScreen)
   Events:Subscribe('Client:UpdateInput', self, self._handleKeyboard)
@@ -39,8 +42,8 @@ function Match:_onMatchJoined(team)
   self.team = team
 end
 
-function Match:_onMatchStarting(map, players)
-  local call = string.format('matchStarting(%d, "%s", %s)', self.team, map, json.encode(players))
+function Match:_onMatchStarting(map, teamSize, players)
+  local call = string.format('matchStarting(%d, %d, "%s", %s)', self.team, teamSize, map, json.encode(players))
   print(call)
   WebUI:ExecuteJS(call)
   WebUI:DisableMouse()
@@ -56,12 +59,18 @@ function Match:_onMatchCompleted(winningTeam)
 end
 
 function Match:_onMatchEnded()
+
+  self.status = Status.MATCH_ENDED
+
   print('Match ended')
   self:_clearCam()
   Events:Dispatch('Lobby:Show')
 end
 
 function Match:_onRoundStarting(loadout)
+
+  self.status = Status.PREROUND_WAIT
+
   local call = 'roundStarting(' .. json.encode(loadout) .. ')'
 
   print(call)
@@ -70,6 +79,9 @@ function Match:_onRoundStarting(loadout)
 end
 
 function Match:_onRoundStarted(data)
+
+  self.status = Status.ROUND_IN_PROGRESS
+
   local call = 'roundStarted()'
   WebUI:ExecuteJS(call)
 
@@ -81,6 +93,9 @@ function Match:_onDamageDealt(giverId, receiverId, amount, lethal)
 end
 
 function Match:_onRoundCompleted(winningTeam)
+
+  self.status = Status.POSTROUND_WAIT
+
   print('Round completed')
   local win = self.team == winningTeam and true or false
 
@@ -130,12 +145,7 @@ function Match:_handleDeathCamera(deltaTime)
     return
   end
 
-  if player.soldier ~= nil then
-    self:_clearCam()
-    return
-  end
-
-  if player.corpse == nil then
+  if player.soldier ~= nil or self.status == Status.MATCH_ENDED or self.status == Status.NOT_STARTED then
     self:_clearCam()
     return
   end

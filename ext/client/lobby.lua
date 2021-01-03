@@ -2,6 +2,8 @@ require('__shared/timer')
 
 local Team = require('__shared/team')
 
+local SPAWN_SCREEN_CAMERA = Guid('E8C38AF4-15F8-43F9-9F39-4CF1D667732E')
+
 local Lobby = class('Lobby')
 
 Lobby.static.LEAVE_TOAST_DELAY = 5
@@ -13,12 +15,16 @@ function Lobby:__init()
   self.lastToastTimestamp = 0
   self.leaveTimeout = nil
   self.open = true
+  self.spawnScreenCamera = nil
 
   Events:Subscribe('WebUI:JoinMatch', self, self._joinMatch)
   Events:Subscribe('WebUI:JoinAnyMatch', self, self._joinAnyMatch)
   Events:Subscribe('WebUI:LeaveMatch', self, self._leaveMatch)
-  Hooks:Install('UI:PushScreen', 1, self, self._onUIPushScreen)
+
   Events:Subscribe('Client:UpdateInput', self, self._onUpdateInput)
+
+  Hooks:Install('UI:PushScreen', 1, self, self._onUIPushScreen)
+  Hooks:Install('EntityFactory:Create', 1, self, self._onCreate)
 
   NetEvents:Subscribe('Lobby:Init', self, self._initLobby)
   NetEvents:Subscribe('Lobby:PlayerJoined', self, self._onPlayerJoined)
@@ -85,20 +91,37 @@ function Lobby:_initLobby(matches)
   self:_showLobby()
 end
 
+function Lobby:_onCreate(hookCtx, entityData, transform)
+
+  if entityData.instanceGuid == SPAWN_SCREEN_CAMERA then
+
+    local entity = hookCtx:Call()
+
+    self.spawnScreenCamera = entity
+
+    print('Spawn screen camera created')
+
+  end
+
+end
 
 function Lobby:_showLobby()
+
+  self.open = true
+
   WebUI:ExecuteJS('showLobby()')
   WebUI:EnableMouse()
+
+  if self.spawnScreenCamera then
+    print('Taking control')
+    self.spawnScreenCamera:FireEvent('TakeControl')
+  end
+
 end
 
 function Lobby:_onUIPushScreen(hook, screen, priority, parentGraph)
 
   local screen = UIGraphAsset(screen)
-
-  if screen.name == 'UI/Flow/Screen/SpawnScreenPC' then
-    self.open = true
-    return
-  end
 
   if screen.name == 'UI/Flow/Screen/HudTDMScreen' then
     self.open = false
@@ -111,6 +134,7 @@ function Lobby:_onUpdateInput(deltaTime)
   if not self.open then
     return
   end
+
   if InputManager:WentKeyUp(InputDeviceKeys.IDK_Escape) then
 
     local now = os.clock()
@@ -134,8 +158,8 @@ function Lobby:_onUpdateInput(deltaTime)
   end
 
   if not InputManager:IsKeyDown(InputDeviceKeys.IDK_Escape) and self.leaveTimeout ~= nil then
-    print('Stopping leave')
     ClearTimeout(self.leaveTimeout)
+    self.leaveTimeout = nil
   end
 
 
