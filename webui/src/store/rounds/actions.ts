@@ -21,17 +21,6 @@ function registerActionCreators(store : Store<AppState, Action>, history : Histo
     history.push('round_starting');
   }
 
-  window.roundStarting = (loadout : Loadout) => {
-  
-    const action : RoundStarting = {
-      loadout,
-      type: ROUND_STARTING
-    }
-  
-    store.dispatch(action);
-    history.push('round_starting')
-  }
-
   window.roundStarted = () => {
     history.push('round_started')
   }

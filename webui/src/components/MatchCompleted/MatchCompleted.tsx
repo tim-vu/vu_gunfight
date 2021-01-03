@@ -7,9 +7,7 @@ import { getOtherTeam, Team } from 'models/Team';
 import { MatchState } from 'store/match/types';
 import Banner from 'components/Banner/Banner';
 import { Result } from 'models/Result';
-
-const MAX_ROUNDS = 10;
-const ROUNDS_TO_WIN = MAX_ROUNDS / 2;
+import { ROUNDS_TO_WIN } from 'common/constants';
 
 interface RoundCompletedProps {
   rounds: RoundsState;
@@ -22,7 +20,7 @@ const getCause = (win: boolean, ourTeam: Team) => {
 };
 
 const getResult = (rounds: RoundsState) => {
-  if (rounds.wins > ROUNDS_TO_WIN) return Result.Win;
+  if (rounds.wins >= ROUNDS_TO_WIN) return Result.Win;
   return Result.Loss;
 };
 

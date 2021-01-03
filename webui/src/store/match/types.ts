@@ -8,6 +8,7 @@ export const DAMAGE_DEALT = 'DAMAGE_DEALT';
 
 export interface MatchState {
   team: Team;
+  teamSize: number;
   map: string;
   spectating: boolean;
   playerInfo: PlayerInfo[];
@@ -18,6 +19,7 @@ export interface MatchState {
 export interface MatchStarting {
   type: typeof MATCH_STARTING;
   team: Team;
+  teamSize: number;
   map: string;
   players: Player[]
 }

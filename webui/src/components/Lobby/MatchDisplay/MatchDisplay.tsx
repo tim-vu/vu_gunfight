@@ -1,5 +1,6 @@
 import { faCircle } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { MAX_TEAM_SIZE, ROUNDS_TO_WIN } from 'common/constants';
 import { renderNTimes } from 'common/helper';
 import { Match } from 'models/Match';
 import { Player } from 'models/Player';
@@ -9,8 +10,6 @@ import React from 'react';
 import { joinMatch } from 'store/lobby/actions';
 import './MatchDisplay.css';
 
-const MAX_TEAM_SIZE = 3;
-const MAX_ROUNDS = 10;
 const UPDATE_INTERVAL = 1000;
 
 interface MatchDisplayProps {
@@ -55,10 +54,12 @@ const toStatusString = (status: Status | undefined) => {
       return 'Waiting for player';
     case Status.PREGAME_WAIT:
     case Status.PREPREROUD_WAIT:
-    case Status.ROUND_ENDED_WAIT:
+    case Status.POSTROUND_WAIT:
     case Status.ROUND_IN_PROGRESS:
-    case Status.MATCH_ENDED:
       return 'In progress';
+    case Status.MPOSTMATCH_WAIT:
+    case Status.MATCH_ENDED:
+      return 'Ending';
     default:
       return 'Not enabled';
   }
@@ -77,7 +78,7 @@ const toScoreIndicator = (wins: number, team: Team) => {
         />
       )}
       {renderNTimes(
-        MAX_ROUNDS / 2 + 1 - wins,
+        ROUNDS_TO_WIN - wins,
         <FontAwesomeIcon
           icon={faCircle}
           className="matchdisplay-scorecircle other"

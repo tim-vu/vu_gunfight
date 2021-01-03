@@ -15,7 +15,7 @@ const LoadoutDisplay: React.FC<LoadoutDisplayProps & RouteComponentProps> = ({
   location,
 }) => {
   if (location.hash === '#scoreboard') {
-    //hide the loadoutdisplay whenever the keyboard is visible
+    //hide the loadoutdisplay whenever the scoreboard is visible
     return null;
   }
 

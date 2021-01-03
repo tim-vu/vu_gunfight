@@ -4,6 +4,7 @@ import './HealthIndicator.css';
 import { AppState } from 'store';
 import { connect } from 'react-redux';
 import { MatchState } from 'store/match/types';
+import { MAX_HEALTH } from 'common/constants';
 
 interface HealthIndicatorProps {
   match: MatchState;
@@ -19,19 +20,22 @@ const getStatus: (ourHealth: number, theirHealth: number) => string = (
   return 'TIED';
 };
 
-const getBarWidth: (health: number) => string = (health) => {
-  return `${(health / 200) * 100}%`;
+const getBarWidth: (health: number, teamSize: number) => string = (
+  health,
+  teamSize
+) => {
+  return `${(health / (MAX_HEALTH * teamSize)) * 100}%`;
 };
 
 const HealthIndicator: React.FC<HealthIndicatorProps> = ({ match }) => {
   const status = getStatus(match.ourHealth, match.theirHealth);
 
   const ourBarStyle: React.CSSProperties = {
-    width: getBarWidth(match.ourHealth),
+    width: getBarWidth(match.ourHealth, match.teamSize),
   };
 
   const theirBarStyle: React.CSSProperties = {
-    width: getBarWidth(match.theirHealth),
+    width: getBarWidth(match.theirHealth, match.teamSize),
   };
 
   return (

@@ -8,8 +8,7 @@ import { AppState } from 'store';
 import { connect } from 'react-redux';
 import IngameScoreboard from 'components/IngameScoreboard/IngameScoreboard';
 import { renderNTimes } from 'common/helper';
-
-const MAX_ROUNDS = 10;
+import { ROUNDS_TO_WIN } from 'common/constants';
 
 interface RoundIndicatorProps {
   rounds: RoundsState;
@@ -30,7 +29,7 @@ const RoundIndicator: React.FC<RoundIndicatorProps> = ({ rounds }) => {
             />
           )}
           {renderNTimes(
-            MAX_ROUNDS / 2 + 1 - rounds.wins,
+            ROUNDS_TO_WIN - rounds.wins,
             <FontAwesomeIcon icon={faCircle} className="score-circle" />
           )}
         </div>
@@ -44,7 +43,7 @@ const RoundIndicator: React.FC<RoundIndicatorProps> = ({ rounds }) => {
             />
           )}
           {renderNTimes(
-            MAX_ROUNDS / 2 + 1 - rounds.losses,
+            ROUNDS_TO_WIN - rounds.losses,
             <FontAwesomeIcon icon={faCircle} className="score-circle" />
           )}
         </div>

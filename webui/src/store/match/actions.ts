@@ -9,11 +9,12 @@ declare const window: any;
 
 function registerActionCreators(history : History) {
 
-  window.matchStarting = (team: Team, map: string, players: Player[]) => {
+  window.matchStarting = (team: Team, teamSize: number, map: string, players: Player[]) => {
 
     const action : MatchStarting = {
       type: MATCH_STARTING,
       team,
+      teamSize,
       map,
       players
     }

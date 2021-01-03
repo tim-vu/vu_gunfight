@@ -20,4 +20,3 @@ else
   Commands.registerLobbyCommands(lobby)
 
 end
-

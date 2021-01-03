@@ -8,8 +8,7 @@ import Countdown from 'components/RoundIndicator/Countdown/Countdown';
 import HealthIndicator from 'components/RoundIndicator/HealthIndicator/HealthIndicator';
 import Lobby from 'components/Lobby/Lobby';
 import MatchCompleted from 'components/MatchCompleted/MatchCompleted';
-
-const PREROUND_WAIT = 5;
+import { PREROUND_WAIT } from 'common/constants';
 
 const App: React.FC = () => {
   return (

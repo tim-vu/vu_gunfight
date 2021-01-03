@@ -1,4 +1,5 @@
 
+import { MAX_HEALTH } from "common/constants";
 import { PlayerInfo, toPlayerInfo } from "models/Player";
 import { Team } from "models/Team";
 import { Reducer } from "redux";
@@ -6,11 +7,12 @@ import { MatchActions, MatchState } from "./types";
 
 const initialState : MatchState = {
   team: Team.RU,
+  teamSize: 2,
   map: "Noshar Canals",
   spectating: false,
   playerInfo: [],
-  ourHealth: 200,
-  theirHealth: 200
+  ourHealth: MAX_HEALTH * 2,
+  theirHealth: MAX_HEALTH * 2
 }
 
 const matchReducer : Reducer<MatchState, MatchActions> = (state : MatchState = initialState, action) => {
@@ -31,13 +33,16 @@ const matchReducer : Reducer<MatchState, MatchActions> = (state : MatchState = i
         ...initialState,
         map: action.map,
         team: action.team,
-        playerInfo: action.players.map(toPlayerInfo)
+        teamSize: action.teamSize,
+        playerInfo: action.players.map(toPlayerInfo),
+        ourHealth: MAX_HEALTH * action.teamSize,
+        theirHealth: MAX_HEALTH * action.teamSize
       }
     case "ROUND_STARTING":
       return {
         ...state,
-        ourHealth: 200,
-        theirHealth: 200
+        ourHealth: MAX_HEALTH * state.teamSize,
+        theirHealth: MAX_HEALTH * state.teamSize
       }
     case "ROUND_COMPLETED":
       return {
