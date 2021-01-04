@@ -7,7 +7,6 @@ Events:Subscribe('Partition:Loaded', function(partition)
       settings:MakeWritable()
       settings.isKillerCameraEnabled = false
       settings.autoBalance = false
-      settings.isDesertingAllowed = true
     end
 
   end

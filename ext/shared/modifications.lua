@@ -9,3 +9,4 @@ ResourceManager:RegisterInstanceLoadHandler(UI_SPAWN_MENU_MP_LOGIC, UI_INGAME_DI
 
   print('Visual environment disabled')
 end)
+

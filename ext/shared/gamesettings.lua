@@ -23,4 +23,7 @@ Events:Subscribe('Level:Loaded', function(levelName, gameMode, round, roundsPerM
   settings = SyncedGameSettings(ResourceManager:GetSettings('SyncedGameSettings'))
   settings.disableRegenerateHealth = true
 
+  local settings = ServerSettings(ResourceManager:GetSettings('ServerSettings'))
+  settings.isDesertingAllowed = true
+
 end)
