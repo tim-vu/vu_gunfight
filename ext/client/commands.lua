@@ -4,11 +4,21 @@ local registerSetupCommands = function()
 
 Console:Register('spawn', 'Spawns the player with the given loadout', function(args)
 
-  if #args ~= 1 then
+  if #args ~= 2 then
     return 'Invalid amount of arguments specified'
   end
 
-  NetEvents:Send('Spawn', args[1])
+  if tonumber(args[2]) == nil then
+    return string.format('Invalid loadout index specified: %s', args[2])
+  end
+
+  local player = PlayerManager:GetLocalPlayer()
+
+  if player.soldier == nil or not player.soldier.isAlive then
+    return 'You must be alive to use this command'
+  end
+
+  NetEvents:Send('Command:Spawn', args[1], tonumber(args[2]))
 
 end)
 
