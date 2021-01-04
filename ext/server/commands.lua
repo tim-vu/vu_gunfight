@@ -1,10 +1,15 @@
+local Maps = require('__shared/maps')
+local Team = require('__shared/team')
+
 local registerSetupCommands = function()
 
-  NetEvents:Subscribe('Spawn', function(player, loadoutIndex)
+  NetEvents:Subscribe('Command:Spawn', function(player, mapId, loadoutIndex)
 
-    local loadout = Equipment.LOADOUTS[tonumber(loadoutIndex)]
+    local map = Maps[mapId]
+    local loadout = map.loadouts[loadoutIndex]
 
     if loadout == nil then
+      print('Loadout nil')
       return
     end
 
