@@ -119,6 +119,9 @@ function Lobby:_joinAnyMatch(player)
 
   table.sort(sortedMatches, compareMapId)
 
+  print('Matches available: ' .. tostring(#sortedMatches))
+  print('First match: ' .. tostring(sortedMatches[1]))
+
   local match = self.matches[sortedMatches[1]]
   local team = match:IsTeamFull(Team.US) and Team.RU or Team.US
 

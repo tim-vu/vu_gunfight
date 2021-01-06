@@ -192,6 +192,8 @@ function Match:_prepareRound()
       return
     end
 
+    p.alive = true
+
     local spawnpoints = self:_getSpawnPoints(self.round, p.team, self.map.spawnpoints)
     Spawning.spawnSoldier(player, loadout, spawnpoints[indices[p.team]], p.team)
 
