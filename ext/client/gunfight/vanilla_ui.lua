@@ -8,6 +8,8 @@ local SCREENS_TO_REMOVE = {
     ['UI/Flow/Screen/SpawnScreenPC'] = {},
     ['UI/Flow/Screen/SpawnScreenTicketCounterTDMScreen'] = {},
     ['UI/Flow/Screen/Scoreboards/ScoreboardTwoTeamsHUD32Screen'] = {},
+    ['UI/Flow/Screen/Scoreboards/ScoreboardTwoTeamsHUD16Screen'] = {},
+    ['UI/Flow/Screen/Scoreboards/ScoreboardTwoTeamsHUD64Screen'] = {},
     ['UI/Flow/Screen/KillScreen'] = {},
     [SPAWN_BUTTON_SCREEN] = {}
 }
@@ -43,6 +45,8 @@ local removeDefaultUI = function(setup)
             hook:Pass(clone, priority, parentGraph)
             return
         end
+
+        print(screen.name)
     end)
 
 end
