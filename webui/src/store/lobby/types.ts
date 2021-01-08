@@ -1,5 +1,7 @@
+import { MAX_HEALTH } from "common/constants";
 import { Match } from "models/Match";
 import { Player } from "models/Player";
+import { Status } from "models/Status";
 import { Team } from "models/Team";
 
 export const INITIALIZE_LOBBY = "INITIALIZE_LOBBY";
@@ -10,6 +12,8 @@ export const JOINED_MATCH = "JOINED_MATCH";
 export const LEAVE_MATCH = "LEAVE_MATCH";
 export const LEFT_MATCH = "LEFT_MATCH";
 export const RESET_MATCH = "RESET_MATCH";
+export const MATCH_STATUS_CHANGED = "MATCH_STATUS_CHANGED";
+export const LOBBY_MATCH_STARTED = "LOBBY_MATCH_STARTED";
 
 export interface LobbyState {
   matches: Match[];
@@ -63,4 +67,16 @@ export interface UpdateScore {
   ruScore: number;
 }
 
-export type LobbyActions = InitializeLobby | ResetMatch | JoinedMatch | LeftMatch | UpdateScore
+export interface MatchStatusChanged {
+  type: typeof MATCH_STATUS_CHANGED;
+  matchId: string;
+  status: Status;
+}
+
+export interface LobbyMatchStarting {
+  type: typeof LOBBY_MATCH_STARTED;
+  matchId: string;
+  startTime: number;
+}
+
+export type LobbyActions = InitializeLobby | ResetMatch | JoinedMatch | LeftMatch | UpdateScore | MatchStatusChanged | LobbyMatchStarting;

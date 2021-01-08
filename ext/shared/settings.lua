@@ -1,3 +1,4 @@
 return {
-  setup = false
+  setup = false,
+  mapName = nil
 }

@@ -23,7 +23,6 @@ function Match:__init(mapId, map)
     [Team.RU] = 0
   }
   self.status = Status.NOT_STARTED
-  self.timestamp = 0
   self.round = 1
   self.loadouts = { }
   self.mapId = mapId
@@ -99,8 +98,7 @@ function Match:Join(player, team)
       self:_prepareRound()
     end, Match.PREGAME_WAIT_DURATION)
 
-    self.timestamp = os.time(os.date("!*t"))
-    self.status = Status.PREGAME_WAIT
+    self:_updateStatus(Status.PREGAME_WAIT)
   end
 
   return true
@@ -149,6 +147,11 @@ function Match:_getPlayersByTeam(team)
 
   return players
 
+end
+
+function Match:_updateStatus(status)
+  self.status = status
+  Events:Dispatch('Match:StatusChanged', self.mapId, status)
 end
 
 function Match:_prepareRound()
@@ -213,7 +216,7 @@ function Match:_prepareRound()
     self:startRound()
   end, Match.PREROUND_WAIT_DURATION)
 
-  self.status = Status.PREROUND_WAIT
+  self:_updateStatus(Status.PREROUND_WAIT)
 end
 
 function Match:_getSpawnPoints(round, team, spawnpoints)
@@ -270,7 +273,7 @@ function Match:startRound()
   print('Round is started')
 
   self:toggleInput(true)
-  self.status = Status.ROUND_IN_PROGRESS
+  self:_updateStatus(Status.ROUND_IN_PROGRESS)
 end
 
 local INPUT_ACTIONS = {
@@ -331,9 +334,7 @@ function Match:stopMatch()
 
   end
 
-  self.status = Status.MATCH_ENDED
-
-  Events:Dispatch('Match:Ended', self.mapId)
+  self:_updateStatus(Status.MATCH_ENDED)
 
   self._playerLeftEvent:Unsubscribe()
   self._playerKilledEvent:Unsubscribe()
@@ -387,8 +388,6 @@ function Match:_onPlayerKilled(player)
 
   end
 
-  Events:Dispatch('Match:RoundCompleted', self.mapId)
-
   for k,v in pairs(self.scores) do
 
     if v > Match.ROUNDS / 2 then
@@ -404,11 +403,11 @@ function Match:_onPlayerKilled(player)
 
         self._postMatchTimeout = SetTimeout(function()
           print('Postmatch wait over, stopping match')
-    
+
           self:stopMatch()
         end, Match.POST_MATCH_DURATION)
 
-        self.status = Status.POSTMATCH_WAIT
+        self:_updateStatus(Status.POSTMATCH_WAIT)
 
         return
     end
@@ -425,7 +424,7 @@ function Match:_onPlayerKilled(player)
   end
 
   self.round = self.round + 1
-  self.status = Status.ROUND_ENDED
+  self:_updateStatus(Status.POSTROUND_WAIT)
 
   self._roundEndedWaitTimeout = SetTimeout(function()
     print('Postround wait over, starting round')

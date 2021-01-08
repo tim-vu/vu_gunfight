@@ -1,11 +1,9 @@
 require('gunfight/match')
-local Lobby = require('lobby')
+require('gunfight/vanilla_ui')
 
-local RemoveDefaultUI = require('gunfight/vanilla_ui')
+local Lobby = require('lobby')
 local Commands = require('commands')
 local Settings = require('__shared/settings')
-
-RemoveDefaultUI(Settings.setup)
 
 if Settings.setup then
 

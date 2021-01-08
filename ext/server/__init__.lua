@@ -14,6 +14,10 @@ end
 
 ServerUtils:SetCustomGameModeName('Gunfight')
 
+if Settings.mapName then
+  ServerUtils:SetCustomMapName(Settings.mapName)
+end
+
 local response = Net:GetHTTP(VERSION_URL)
 
 if response == nil then
@@ -38,5 +42,6 @@ if Settings.setup then
 else
   Lobby(Maps)
 end
+
 
 

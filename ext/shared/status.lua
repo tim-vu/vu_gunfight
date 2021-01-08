@@ -4,7 +4,7 @@ local Status = {
   ['PREROUND_WAIT'] = 3,
   ['ROUND_IN_PROGRESS'] = 4,
   ['POSTROUND_WAIT'] = 5,
-  ['MPOSTMATCH_WAIT'] = 6,
+  ['POSTMATCH_WAIT'] = 6,
   ['MATCH_ENDED'] = 7
 }
 

@@ -2,7 +2,12 @@ require('__shared/timer')
 
 local Team = require('__shared/team')
 
-local SPAWN_SCREEN_CAMERA = Guid('E8C38AF4-15F8-43F9-9F39-4CF1D667732E')
+local CAMERA_TRANSFORM = LinearTransform(
+  Vec3(0, 0, 0),
+  Vec3(0, 1, 0),
+  Vec3(0, 0, 1),
+  Vec3(0, 500, 0)
+)
 
 local Lobby = class('Lobby')
 
@@ -15,28 +20,29 @@ function Lobby:__init()
   self.lastToastTimestamp = 0
   self.leaveTimeout = nil
   self.open = true
-  self.spawnScreenCamera = nil
+  self.camera = nil
 
   Events:Subscribe('WebUI:JoinMatch', self, self._joinMatch)
   Events:Subscribe('WebUI:JoinAnyMatch', self, self._joinAnyMatch)
   Events:Subscribe('WebUI:LeaveMatch', self, self._leaveMatch)
 
   Events:Subscribe('Client:UpdateInput', self, self._onUpdateInput)
-
   Hooks:Install('UI:PushScreen', 1, self, self._onUIPushScreen)
-  Hooks:Install('EntityFactory:Create', 1, self, self._onCreate)
+  Events:Subscribe('Player:Respawn', self, self._onPlayerRespawn)
 
   NetEvents:Subscribe('Lobby:Init', self, self._initLobby)
   NetEvents:Subscribe('Lobby:PlayerJoined', self, self._onPlayerJoined)
   NetEvents:Subscribe('Lobby:JoinFailed', self, self._joinMatchFailed)
+
   NetEvents:Subscribe('Lobby:PlayerLeft', self, self._onPlayerLeft)
   NetEvents:Subscribe('Lobby:LeaveFailed', self, self._leaveMatchFailed)
+  NetEvents:Subscribe('Lobby:MatchStarting', self, self._onMatchStarting)
   NetEvents:Subscribe('Lobby:MatchEnded', self, self._onMatchEnded)
   NetEvents:Subscribe('Lobby:RoundCompleted', self, self._onRoundCompleted)
+  NetEvents:Subscribe('Lobby:StatusChanged', self, self._onStatusChanged)
 
   Events:Subscribe('Player:Connected', self, self._onPlayerConnected)
   Events:Subscribe('Lobby:Show', self, self._showLobby)
-
 end
 
 function Lobby:_onPlayerConnected(player)
@@ -54,6 +60,25 @@ function Lobby:_onPlayerConnected(player)
   if localPlayer.id ~= player.id then
     return
   end
+
+  local cameraData = CameraEntityData()
+  cameraData.fov = 90
+  cameraData.transform = CAMERA_TRANSFORM
+  cameraData.priority = 1
+
+  local entity = EntityManager:CreateEntity(cameraData, CAMERA_TRANSFORM)
+
+  if entity == nil then
+    print('Unable to create camera')
+    return
+  end
+
+  entity:Init(Realm.Realm_Client, true)
+
+  self.camera = entity
+  entity:FireEvent('TakeControl')
+
+  print('Lobby camera created')
 
   NetEvents:Send('Lobby:Ready')
   self.init = true
@@ -76,10 +101,6 @@ function Lobby:_initLobby(matches)
 
   local player = PlayerManager:GetLocalPlayer()
 
-  if player == nil then
-    print('player nil')
-  end
-
   WebUI:Init()
 
   local call = string.format('initializeLobby("%s", %d, %s)', player.name, player.id, json.encode(matchesArray))
@@ -91,31 +112,32 @@ function Lobby:_initLobby(matches)
   self:_showLobby()
 end
 
-function Lobby:_onCreate(hookCtx, entityData, transform)
-
-  if entityData.instanceGuid == SPAWN_SCREEN_CAMERA then
-
-    local entity = hookCtx:Call()
-
-    self.spawnScreenCamera = entity
-
-    print('Spawn screen camera created')
-
-  end
-
-end
-
 function Lobby:_showLobby()
 
   self.open = true
 
   WebUI:ExecuteJS('showLobby()')
+  WebUI:BringToFront()
   WebUI:EnableMouse()
 
-  if self.spawnScreenCamera then
+  if self.camera then
     print('Taking control')
-    self.spawnScreenCamera:FireEvent('TakeControl')
+    self.camera:FireEvent('TakeControl')
   end
+
+end
+
+function Lobby:_onPlayerRespawn(player)
+
+  local me = PlayerManager:GetLocalPlayer()
+
+  if  player.id ~= me.id then
+    print('Not me')
+    return
+  end
+  
+  print('Releasing control')
+  self.camera:FireEvent('ReleaseControl')
 
 end
 
@@ -127,6 +149,7 @@ function Lobby:_onUIPushScreen(hook, screen, priority, parentGraph)
     self.open = false
     return
   end
+
 end
 
 function Lobby:_onUpdateInput(deltaTime)
@@ -211,6 +234,18 @@ end
 
 function Lobby:_leaveMatchFailed(reason)
   print('Leaving match failed: ' .. reason)
+end
+
+function Lobby:_onMatchStarting(mapId)
+  local call = string.format('lobbyMatchStarted("%s")', mapId)
+  print(call)
+  WebUI:ExecuteJS(call)
+end
+
+function Lobby:_onStatusChanged(mapId, status)
+  local call = string.format('matchStatusChanged("%s", %d)', mapId, status)
+  print(call)
+  WebUI:ExecuteJS(call)
 end
 
 function Lobby:_onRoundCompleted(mapId, scores)

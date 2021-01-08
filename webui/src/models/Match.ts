@@ -36,3 +36,18 @@ export function removePlayer(match : Match, playerId : number) : Match {
     players: match.players.filter(p => p.id !== playerId)
   }
 }
+
+export function updateStatus(match : Match, status : Status) : Match {
+  return {
+    ...match,
+    status: status
+  }
+}
+
+export function startMatch(match : Match, startTime : number) : Match {
+  return {
+    ...match,
+    status: Status.PREGAME_WAIT,
+    startTime: startTime
+  }
+}

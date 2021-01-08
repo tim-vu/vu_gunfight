@@ -20,7 +20,7 @@ function Lobby.static:matchToMatchVm(match)
     mapId = match.mapId,
     map = match.map.displayName,
     teamSize = match.map.teamSize,
-    startTime = match.timestamp,
+    startTime = 0,
     status = match.status,
     players = {}
   }
@@ -48,7 +48,7 @@ function Lobby:__init(maps)
     self.matches[k] = Match(k, v)
   end
 
-  Events:Subscribe('Match:Ended', self, self._onMatchEnded)
+  Events:Subscribe('Match:StatusChanged', self, self._onStatusChanged)
   Events:Subscribe('Match:PlayerLeft', self, self._onPlayerLeftMatch)
   Events:Subscribe('Match:RoundCompleted', self, self._onRoundCompleted)
 
@@ -145,27 +145,39 @@ function Lobby:_leaveMatch(player)
 
 end
 
-function Lobby:_leaveGame(player)
-  player:Kick('See you next time!')
-end
-
 function Lobby:_onPlayerLeftMatch(mapId, playerId)
   NetEvents:Broadcast('Lobby:PlayerLeft', mapId, playerId)
 end
 
-function Lobby:_onRoundCompleted(mapId)
+function Lobby:_onStatusChanged(mapId, status)
+
   local match = self.matches[mapId]
-  NetEvents:Broadcast('Lobby:RoundCompleted', mapId, match.scores)
+
+  if status == Status.MATCH_ENDED then
+
+    self.matches[mapId] = Match(match.mapId, match.map)
+
+    NetEvents:Broadcast('Lobby:MatchEnded', mapId)
+
+    return
+  end
+
+  if status == Status.POSTROUND_WAIT then
+    NetEvents:Broadcast('Lobby:RoundCompleted', mapId, match.scores)
+    return
+  end
+
+  if status == Status.PREGAME_WAIT then
+    NetEvents:Broadcast('Lobby:MatchStarting', mapId)
+    return
+  end
+
+  NetEvents:Broadcast('Lobby:StatusChanged', mapId, match.status)
+
 end
 
-function Lobby:_onMatchEnded(mapId)
-
-  local oldMatch = self.matches[mapId]
-
-  self.matches[mapId] = Match(oldMatch.mapId, oldMatch.map)
-
-  NetEvents:Broadcast('Lobby:MatchEnded', mapId)
-
+function Lobby:_leaveGame(player)
+  player:Kick('See you next time!')
 end
 
 return Lobby

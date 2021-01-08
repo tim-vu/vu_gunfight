@@ -10,6 +10,7 @@ function Match:__init()
 
   Hooks:Install('UI:PushScreen', 1, self, self._onUIPushScreen)
   Events:Subscribe('Client:UpdateInput', self, self._handleKeyboard)
+  Events:Subscribe('Soldier:HealthAction', self, self._onHealthAction)
   Events:Subscribe('Client:UpdateInput', self, self._handleDeathCamera)
 
   NetEvents:Subscribe('Match:Joined', self, self._onMatchJoined)
@@ -20,6 +21,7 @@ function Match:__init()
   NetEvents:Subscribe('Round:Started', self, self._onRoundStarted)
   NetEvents:Subscribe('Damage:Dealt', self, self._onDamageDealt)
   NetEvents:Subscribe('Round:Completed', self, self._onRoundCompleted)
+
 end
 
 function Match:_onUIPushScreen(hook, screen, priority, parentGraph)
@@ -110,13 +112,11 @@ end
 function Match:_handleKeyboard(deltaTime)
 
   if InputManager:WentDown(InputConceptIdentifiers.ConceptScoreboard) then
-    print('Showding scoreboard')
     WebUI:ExecuteJS('showScoreboard()')
     return
   end
 
   if InputManager:WentUp(InputConceptIdentifiers.ConceptScoreboard) then
-    print('Hiding scoreboard')
     WebUI:ExecuteJS('hideScoreboard()')
     return
   end
@@ -137,31 +137,27 @@ function Match:_clearCam()
 
 end
 
-function Match:_handleDeathCamera(deltaTime)
+function Match:_onHealthAction(soldier, healthAction)
 
-  local player = PlayerManager:GetLocalPlayer()
-
-  if player == nil then
+  if self.status == Status.MATCH_ENDED or self.status == Status.NOT_STARTED or healthAction ~= HealthStateAction.OnManDown then
     return
   end
 
-  if player.soldier ~= nil or self.status == Status.MATCH_ENDED or self.status == Status.NOT_STARTED then
-    self:_clearCam()
-    return
-  end
+  local me = PlayerManager:GetLocalPlayer()
 
-  if self.deathCamera ~= nil then
+  if me.corpse == nil or me.corpse.health > 0 then
     return
   end
 
   print('Creating deathcam')
 
   local transform = ClientUtils:GetCameraTransform()
+  print(transform)
 
   local cameraData = CameraEntityData()
   cameraData.fov = 90
   cameraData.transform = transform
-  cameraData.priority = 1
+  cameraData.priority = 2
 
   local entity = EntityManager:CreateEntity(cameraData, transform)
 
@@ -175,6 +171,22 @@ function Match:_handleDeathCamera(deltaTime)
   self.deathCamera = entity
 
   self.deathCamera:FireEvent('TakeControl')
+
+end
+
+function Match:_handleDeathCamera(deltaTime)
+
+  local player = PlayerManager:GetLocalPlayer()
+
+  if player == nil then
+    return
+  end
+
+  if player.soldier ~= nil or self.status == Status.MATCH_ENDED or self.status == Status.NOT_STARTED then
+    self:_clearCam()
+    return
+  end
+
 
 end
 

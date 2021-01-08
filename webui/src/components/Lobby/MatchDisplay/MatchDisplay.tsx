@@ -53,11 +53,12 @@ const toStatusString = (status: Status | undefined) => {
     case Status.NOT_STARTED:
       return 'Waiting for player';
     case Status.PREGAME_WAIT:
+      return 'Starting';
     case Status.PREPREROUD_WAIT:
     case Status.POSTROUND_WAIT:
     case Status.ROUND_IN_PROGRESS:
       return 'In progress';
-    case Status.MPOSTMATCH_WAIT:
+    case Status.POSTMATCH_WAIT:
     case Status.MATCH_ENDED:
       return 'Ending';
     default:

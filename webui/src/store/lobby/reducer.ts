@@ -1,4 +1,5 @@
-import { addPlayer, removePlayer, resetMatch } from "models/Match";
+import { addPlayer, removePlayer, resetMatch, startMatch, updateStatus } from "models/Match";
+import { Status } from "models/Status";
 import { Reducer } from "redux";
 import { LobbyActions, LobbyState } from "./types";
 
@@ -60,7 +61,7 @@ const lobbyReducer : Reducer<LobbyState, LobbyActions> = (state : LobbyState = i
           return state;
 
         const newMatches3 = state.matches.slice();
-        newMatches3[index3] = {...state.matches[index3], usScore: action.usScore, ruScore: action.ruScore}
+        newMatches3[index3] = {...state.matches[index3], usScore: action.usScore, ruScore: action.ruScore, status: Status.POSTROUND_WAIT}
 
         return {
           ...state,
@@ -84,7 +85,34 @@ const lobbyReducer : Reducer<LobbyState, LobbyActions> = (state : LobbyState = i
           currentMatchId: currentMatchId3
         }
 
+      case "MATCH_STATUS_CHANGED":
 
+        const index5 = state.matches.findIndex(m => m.mapId === action.matchId)
+
+        if(index5 === -1)
+          return state;
+
+        const newMatches5 = state.matches.slice();
+        newMatches5[index5] = updateStatus(state.matches[index5], action.status)
+
+        return {
+          ...state,
+          matches: newMatches5
+        }
+      case "LOBBY_MATCH_STARTED":
+
+        const index6 = state.matches.findIndex(m => m.mapId === action.matchId)
+
+        if(index6 === -1)
+          return state
+
+        const newMatches6 = state.matches.slice();
+        newMatches6[index6] = startMatch(state.matches[index6], action.startTime)
+
+        return {
+          ...state,
+          matches: newMatches6
+        }
     default:
       return state;
   }

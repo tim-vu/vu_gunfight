@@ -3,8 +3,9 @@ import { Team } from "models/Team";
 import { Store } from "redux";
 import { Action, AppState } from "store";
 import { History } from "history";
-import { InitializeLobby, INITIALIZE_LOBBY, JoinAnyMatch, JoinedMatch, JOINED_MATCH, JoinMatch, LeaveMatch, LeftMatch, LEFT_MATCH, ResetMatch, RESET_MATCH, UpdateScore, UPDATE_SCORE } from "./types";
+import { InitializeLobby, INITIALIZE_LOBBY, JoinAnyMatch, JoinedMatch, JOINED_MATCH, JoinMatch, LeaveMatch, LeftMatch, LEFT_MATCH, LobbyMatchStarting as LobbyMatchStarted, LOBBY_MATCH_STARTED, MatchStatusChanged, MATCH_STATUS_CHANGED, ResetMatch, RESET_MATCH, UpdateScore, UPDATE_SCORE } from "./types";
 import { toast } from "react-toastify";
+import { Status } from "models/Status";
 
 declare const window: any;
 declare const WebUI: any;
@@ -120,6 +121,32 @@ export default function registerActionCreators(store : Store<AppState, Action>, 
       matchId,
       usScore,
       ruScore
+    }
+
+    console.log(action);
+
+    store.dispatch(action);
+  }
+
+  window.matchStatusChanged = (matchId : string, status : Status) => {
+
+    const action : MatchStatusChanged = {
+      type: MATCH_STATUS_CHANGED,
+      matchId,
+      status
+    }
+
+    console.log(action);
+
+    store.dispatch(action);
+  }
+
+  window.lobbyMatchStarted = (matchId : string) => {
+
+    const action : LobbyMatchStarted = {
+      type: LOBBY_MATCH_STARTED,
+      matchId,
+      startTime: Date.now() / 1000
     }
 
     console.log(action);
