@@ -157,7 +157,7 @@ function Match:_onHealthAction(soldier, healthAction)
   local cameraData = CameraEntityData()
   cameraData.fov = 90
   cameraData.transform = transform
-  cameraData.priority = 2
+  cameraData.priority = 1
 
   local entity = EntityManager:CreateEntity(cameraData, transform)
 

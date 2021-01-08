@@ -61,7 +61,11 @@ ResourceManager:RegisterInstanceLoadHandler(FULL_TEAM_DEATHMATCH_XP4, FULL_TEAM_
 
 end)
 
-ResourceManager:RegisterInstanceLoadHandler(Guid('57F399B3-70DD-11E0-9327-ED63059941A3'), Guid('C328EFDC-AF70-4097-B47C-DF4C32E2EC3C'), function(instance)
+local DEATHMATCH = Guid('57F399B3-70DD-11E0-9327-ED63059941A3')
+local PREROUND = Guid('C328EFDC-AF70-4097-B47C-DF4C32E2EC3C')
+
+
+ResourceManager:RegisterInstanceLoadHandler(DEATHMATCH, PREROUND, function(instance)
 
   print('Disabling preround')
   local preRound = PreRoundEntityData(instance)
@@ -70,3 +74,17 @@ ResourceManager:RegisterInstanceLoadHandler(Guid('57F399B3-70DD-11E0-9327-ED6305
 
 end)
 
+local MP_SOLDIER = Guid('F256E142-C9D8-4BFE-985B-3960B9E9D189')
+local SOLDIER_BODY_COMPONENT = Guid('1C721510-AD42-4AFD-B613-04DC37D0FC1F')
+
+ResourceManager:RegisterInstanceLoadHandler(MP_SOLDIER, SOLDIER_BODY_COMPONENT, function(instance)
+
+  local soldierBodyComponentData = SoldierBodyComponentData(instance)
+
+  soldierBodyComponentData:MakeWritable()
+
+  soldierBodyComponentData.components:erase(13)
+  print('Removing EntityInteractionComponent')
+
+
+end)
