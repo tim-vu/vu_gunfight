@@ -1,3 +1,9 @@
+local Settings = require('__shared/settings')
+
+if Settings.setup then
+  return
+end
+
 Events:Subscribe('Partition:Loaded', function(partition)
 
   for _,v in pairs(partition.instances) do
