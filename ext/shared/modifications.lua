@@ -40,11 +40,14 @@ ResourceManager:RegisterInstanceLoadHandler(FULL_TEAM_DEATHMATCH, FULL_TEAM_DEAT
   killCounter2:MakeWritable()
   killCounter2.enabled = false
 
+  local inputRestriction = InputRestrictionEntityData(blueprint.objects[41])
+  inputRestriction:MakeWritable()
+  inputRestriction.enabled = false
+
 end)
 
 local FULL_TEAM_DEATHMATCH_XP4 = Guid('676C0FD7-EA75-4F5D-8764-BB076F6F3E11')
 local FULL_TEAM_DEATHMATCH_XP4_BLUEPRINT = Guid('5BB6F238-AB54-4EF4-B9E6-BADFD2290397')
-
 
 
 ResourceManager:RegisterInstanceLoadHandler(FULL_TEAM_DEATHMATCH_XP4, FULL_TEAM_DEATHMATCH_XP4_BLUEPRINT, function(instance)
@@ -64,6 +67,10 @@ ResourceManager:RegisterInstanceLoadHandler(FULL_TEAM_DEATHMATCH_XP4, FULL_TEAM_
   local killCounter2 = KillCounterEntityData(blueprint.objects[21])
   killCounter2:MakeWritable()
   killCounter2.enabled = false
+
+  local inputRestriction = InputRestrictionEntityData(blueprint.objects[41])
+  inputRestriction:MakeWritable()
+  inputRestriction.enabled = false
 
 end)
 
