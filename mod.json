@@ -1,7 +1,7 @@
 {
   "Name": "Gunfight",
   "Description": "A recreation of Modern Warfare's gunfight mode",
-  "Version": "1.0.5",
+  "Version": "1.0.6",
   "HasVeniceEXT": true,
   "HasWebUI": true,
   "Dependencies": {
