@@ -435,15 +435,21 @@ end
 
 function Match:_onDamageDealt(hook, soldier, info, giverInfo)
 
-  if self.status == Status.ROUND_IN_PROGRESS then
-
-    local giverId = giverInfo.giver ~= nil and giverInfo.giver.id or nil
-    local amount = math.min(soldier.health, info.damage)
-    local lethal = info.damage >= soldier.health
-
-    self:_sendToPlayers('Damage:Dealt', giverId, soldier.player.id, amount, lethal)
-
+  if self.status ~= Status.ROUND_IN_PROGRESS then
+    return
   end
+
+  local receiverId = soldier.player.id
+
+  if not self.players[receiverId] then
+    return
+  end
+
+  local giverId = giverInfo.giver ~= nil and giverInfo.giver.id or nil
+  local amount = math.min(soldier.health, info.damage)
+  local lethal = info.damage >= soldier.health
+
+  self:_sendToPlayers('Damage:Dealt', giverId, receiverId, amount, lethal)
 
 end
 
