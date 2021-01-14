@@ -1,4 +1,8 @@
 return {
+  --enabled setup mode
   setup = false,
-  mapName = nil
+  --sets the mapname
+  mapName = nil,
+  --disables blood decals
+  disableDecals = true
 }

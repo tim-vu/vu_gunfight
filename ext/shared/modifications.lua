@@ -40,6 +40,7 @@ ResourceManager:RegisterInstanceLoadHandler(FULL_TEAM_DEATHMATCH, FULL_TEAM_DEAT
   killCounter2:MakeWritable()
   killCounter2.enabled = false
 
+  print('')
   local inputRestriction = InputRestrictionEntityData(blueprint.objects[41])
   inputRestriction:MakeWritable()
   inputRestriction.enabled = false
@@ -89,6 +90,7 @@ end)
 
 local MP_SOLDIER = Guid('F256E142-C9D8-4BFE-985B-3960B9E9D189')
 local SOLDIER_BODY_COMPONENT = Guid('1C721510-AD42-4AFD-B613-04DC37D0FC1F')
+local SOLDIER_DECAL_COMPONENT = Guid('EE531A1F-417F-4F53-BE2B-F555945EA3E7')
 
 ResourceManager:RegisterInstanceLoadHandler(MP_SOLDIER, SOLDIER_BODY_COMPONENT, function(instance)
 
@@ -99,5 +101,18 @@ ResourceManager:RegisterInstanceLoadHandler(MP_SOLDIER, SOLDIER_BODY_COMPONENT, 
   soldierBodyComponentData.components:erase(13)
   print('Removing EntityInteractionComponent')
 
-
 end)
+
+if Settings.disableDecals then
+
+  ResourceManager:RegisterInstanceLoadHandler(MP_SOLDIER, SOLDIER_DECAL_COMPONENT, function(instance)
+
+    local soldierDecal = SoldierDecalComponentData(instance)
+    soldierDecal:MakeWritable()
+    soldierDecal.excluded = true
+    print('Removing decals')
+
+  end)
+
+end
+
