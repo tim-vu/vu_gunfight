@@ -132,10 +132,9 @@ function Lobby:_onPlayerRespawn(player)
   local me = PlayerManager:GetLocalPlayer()
 
   if  player.id ~= me.id then
-    print('Not me')
     return
   end
-  
+
   print('Releasing control')
   self.camera:FireEvent('ReleaseControl')
 
