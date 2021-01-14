@@ -14,7 +14,8 @@ local loadouts = {
       attachments = {}
     },
     accessories = {
-      Equipment.ACCESSORIES.KNIFE
+      Equipment.ACCESSORIES.CROSSBOW,
+      Equipment.ACCESSORIES.C4
     }
   },
   {
@@ -33,7 +34,6 @@ local loadouts = {
       }
     },
     accessories = {
-      Equipment.ACCESSORIES.KNIFE,
       Equipment.ACCESSORIES.CROSSBOW
     }
   },

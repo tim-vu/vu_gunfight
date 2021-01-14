@@ -12,6 +12,8 @@ local SoldierAppearance = {
   [Team.RU] = 'Persistence/Unlocks/Soldiers/Visual/MP/RU/MP_RU_Assault_Appearance01',
 }
 
+local KNIFE = 'Weapons/Knife/U_Knife'
+
 local Slot = {
   [1] = WeaponSlot.WeaponSlot_0,
   [2] = WeaponSlot.WeaponSlot_1,
@@ -52,11 +54,16 @@ Spawning.static.spawnSoldier =  function(player, loadout, transform, team)
     selectWeapon(player, WeaponSlot.WeaponSlot_1, loadout.secondary.weapon.name, loadout.secondary.attachments)
   end
 
-  if loadout.accessories ~= nil then
-    for i, item in pairs(loadout.accessories) do
-      selectWeapon(player, Slot[i + 2], item.name, {})
+  if loadout.accessories ~= nil and #loadout.accessories > 0 then
+
+    selectWeapon(player, Slot[3], loadout.accessories[1].name, {})
+
+    if #loadout.accessories > 1 then
+      selectWeapon(player, Slot[6], loadout.accessories[2].name, {})
     end
   end
+
+  selectWeapon(player, Slot[8], KNIFE, {})
 
   local soldierAsset = ResourceManager:SearchForDataContainer(SoldierAsset[team])
   local appearance = ResourceManager:SearchForDataContainer(SoldierAppearance[team])

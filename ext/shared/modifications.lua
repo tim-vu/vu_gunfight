@@ -40,7 +40,7 @@ ResourceManager:RegisterInstanceLoadHandler(FULL_TEAM_DEATHMATCH, FULL_TEAM_DEAT
   killCounter2:MakeWritable()
   killCounter2.enabled = false
 
-  print('')
+  print('Removing input restrictions')
   local inputRestriction = InputRestrictionEntityData(blueprint.objects[41])
   inputRestriction:MakeWritable()
   inputRestriction.enabled = false

@@ -65,10 +65,6 @@ Equipment.static.WEAPONS = {
 }
 
 Equipment.static.ACCESSORIES = {
-  KNIFE = {
-    displayName = 'Knife',
-    name = "Weapons/Knife/U_Knife",
-  },
   CROSSBOW = {
     displayName = 'XBOW',
     name = 'Weapons/XP4_Crossbow_Prototype/U_Crossbow_Scoped_Cobra',
