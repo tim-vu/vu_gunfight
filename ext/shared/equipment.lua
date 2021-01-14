@@ -59,7 +59,7 @@ Equipment.static.WEAPONS = {
     displayName = 'MP412 Rex',
     name = 'Weapons/MP412Rex/U_MP412Rex',
     category = 'Pistol',
-    imageUrl = 'fb://UI/Art/Persistence/Weapons/MP412Rex'
+    imageUrl = 'fb://UI/Art/Persistence/Weapons/REX'
   }
 
 }
