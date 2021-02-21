@@ -246,7 +246,7 @@ function Match:_removeEntities(type, predicate)
   local it = EntityManager:GetIterator(type)
 
   local entity = it:Next()
-  
+
   while entity ~= nil do
 
     local spatialEntity = SpatialEntity(entity)
@@ -254,7 +254,7 @@ function Match:_removeEntities(type, predicate)
     local x = spatialEntity.transform.trans.x
     local y = spatialEntity.transform.trans.z
 
-    if (not predicate or predicate(entity)) and self.map.area:IsInside(x, y) then
+    if (not predicate or predicate(entity)) and self.map.area:IsInside(Vec2(x, y)) then
       entity:Destroy()
     end
 

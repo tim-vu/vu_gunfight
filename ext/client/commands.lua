@@ -50,7 +50,7 @@ Console:Register('position', "Prints the player's current position", function(ar
 
   local transform = player.soldier.transform
 
-  return string.format('Vec3%s',transform.trans)
+  return string.format('Vec2(%f, %f)', transform.trans.x, transform.trans.z)
 end)
 
 end
