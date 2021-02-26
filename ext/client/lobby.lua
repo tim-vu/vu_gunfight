@@ -11,8 +11,8 @@ local CAMERA_TRANSFORM = LinearTransform(
 
 local Lobby = class('Lobby')
 
-Lobby.static.LEAVE_TOAST_DELAY = 5
-Lobby.static.LEAVE_HOLD_DURATION = 3
+Lobby.static.LEAVE_TOAST_DELAY = 5000
+Lobby.static.LEAVE_HOLD_DURATION = 3000
 
 function Lobby:__init()
 
@@ -27,8 +27,6 @@ function Lobby:__init()
   Events:Subscribe('WebUI:LeaveMatch', self, self._leaveMatch)
 
   Events:Subscribe('Client:UpdateInput', self, self._onUpdateInput)
-  Hooks:Install('UI:PushScreen', 1, self, self._onUIPushScreen)
-  Events:Subscribe('Player:Respawn', self, self._onPlayerRespawn)
 
   NetEvents:Subscribe('Lobby:Init', self, self._initLobby)
   NetEvents:Subscribe('Lobby:PlayerJoined', self, self._onPlayerJoined)
@@ -43,6 +41,7 @@ function Lobby:__init()
 
   Events:Subscribe('Player:Connected', self, self._onPlayerConnected)
   Events:Subscribe('Lobby:Show', self, self._showLobby)
+  Events:Subscribe('Lobby:Hide', self, self._hideLobby)
 end
 
 function Lobby:_onPlayerConnected(player)
@@ -64,7 +63,7 @@ function Lobby:_onPlayerConnected(player)
   local cameraData = CameraEntityData()
   cameraData.fov = 90
   cameraData.transform = CAMERA_TRANSFORM
-  cameraData.priority = 1
+  cameraData.priority = 2
 
   local entity = EntityManager:CreateEntity(cameraData, CAMERA_TRANSFORM)
 
@@ -91,7 +90,7 @@ function Lobby:_initLobby(matches)
 
   local matchesArray = {}
 
-  for _,v in pairs(matches) do
+  for _, v in pairs(matches) do
     table.insert(matchesArray, v)
   end
 
@@ -127,28 +126,12 @@ function Lobby:_showLobby()
 
 end
 
-function Lobby:_onPlayerRespawn(player)
+function Lobby:_hideLobby()
 
-  local me = PlayerManager:GetLocalPlayer()
-
-  if  player.id ~= me.id then
-    return
-  end
+  self.open = false
 
   print('Releasing control')
   self.camera:FireEvent('ReleaseControl')
-
-end
-
-function Lobby:_onUIPushScreen(hook, screen, priority, parentGraph)
-
-  local screen = UIGraphAsset(screen)
-
-  if screen.name == 'UI/Flow/Screen/HudTDMScreen' then
-    self.open = false
-    return
-  end
-
 end
 
 function Lobby:_onUpdateInput(deltaTime)
@@ -159,7 +142,7 @@ function Lobby:_onUpdateInput(deltaTime)
 
   if InputManager:WentKeyUp(InputDeviceKeys.IDK_Escape) then
 
-    local now = os.clock()
+    local now = SharedUtils:GetTimeMS()
 
     if self.lastToastTimestamp + Lobby.LEAVE_TOAST_DELAY < now then
       print('Showing toast')
@@ -183,7 +166,6 @@ function Lobby:_onUpdateInput(deltaTime)
     ClearTimeout(self.leaveTimeout)
     self.leaveTimeout = nil
   end
-
 
 end
 

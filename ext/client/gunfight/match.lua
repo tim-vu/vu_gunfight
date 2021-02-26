@@ -71,6 +71,8 @@ end
 
 function Match:_onRoundStarting(loadout)
 
+  Events:Dispatch('Lobby:Hide')
+
   self.status = Status.PREROUND_WAIT
 
   local call = 'roundStarting(' .. json.encode(loadout) .. ')'
@@ -152,7 +154,6 @@ function Match:_onHealthAction(soldier, healthAction)
   print('Creating deathcam')
 
   local transform = ClientUtils:GetCameraTransform()
-  print(transform)
 
   local cameraData = CameraEntityData()
   cameraData.fov = 90

@@ -1,10 +1,9 @@
 local Lobby = require('lobby')
-local Settings = require('__shared/settings')
-local Maps = require('__shared/maps')
 local registerSetupCommands = require('commands')
 local version = require('version')
 
-local VERSION_URL = 'https://raw.githubusercontent.com/tim-vu/vu_gunfight/master/mod.json'
+local VERSION_URL =
+    'https://raw.githubusercontent.com/tim-vu/vu_gunfight/master/mod.json'
 
 local printOutOfDateMessage = function()
   print('================================================')
@@ -13,10 +12,6 @@ local printOutOfDateMessage = function()
 end
 
 ServerUtils:SetCustomGameModeName('Gunfight')
-
-if Settings.mapName then
-  ServerUtils:SetCustomMapName(Settings.mapName)
-end
 
 local response = Net:GetHTTP(VERSION_URL)
 
@@ -35,13 +30,18 @@ else
 
 end
 
+print('Waiting for initialization')
+Events:Subscribe('Gunfight:Initialize', function(config)
+  print('Gunfight initializing, loading map: ' .. config.mapName)
+  ServerUtils:SetCustomMapName(config.mapName)
 
-if Settings.setup then
-  print('Setup mode enabled')
-  registerSetupCommands()
-else
-  Lobby(Maps)
-end
+  if config.setup then
+    print('Setup mode enabled')
+    registerSetupCommands(config.maps)
+  else
+    print('Setup mode disabled, starting the lobby')
+    Lobby(config.maps)
+  end
 
-
+end)
 

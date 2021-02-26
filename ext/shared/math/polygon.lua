@@ -1,17 +1,13 @@
 class('Polygon')
 
-function Polygon:__init(...)
-  self.points = {...}
-end
+function Polygon.static:isInside(polygon, point)
 
-function Polygon:IsInside(point)
+  local minX = polygon[1].x
+  local maxX = polygon[1].x
+  local minY = polygon[1].y
+  local maxY = polygon[1].y
 
-  local minX = self.points[1].x
-  local maxX = self.points[1].x
-  local minY = self.points[1].y
-  local maxY = self.points[1].y
-
-  for _,p in pairs(self.points) do
+  for _,p in pairs(polygon) do
     minX = math.min(minX, p.x)
     maxX = math.max(maxX, p.x)
     minY = math.min(minY, p.y)
@@ -25,13 +21,13 @@ function Polygon:IsInside(point)
   -- https://wrf.ecse.rpi.edu/Research/Short_Notes/pnpoly.html
   local inside = false
   local i = 1
-  local j = #self.points
+  local j = #polygon
 
-  while i <= #self.points do
+  while i <= #polygon do
 
-    if ((self.points[i].y > point.y) ~= (self.points[j].y > point.y)) and 
-      point.x < (self.points[j].x - self.points[i].x) * (point.y - self.points[i].y) / 
-      (self.points[j].y - self.points[i].y) + self.points[i].x then
+    if ((polygon[i].y > point.y) ~= (polygon[j].y > point.y)) and 
+      point.x < (polygon[j].x - polygon[i].x) * (point.y - polygon[i].y) / 
+      (polygon[j].y - polygon[i].y) + polygon[i].x then
       inside = not inside
     end
 

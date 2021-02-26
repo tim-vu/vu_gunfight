@@ -1,11 +1,14 @@
-local Maps = require('__shared/maps')
 local Team = require('__shared/team')
 
-local registerSetupCommands = function()
+local registerSetupCommands = function(config)
 
   NetEvents:Subscribe('Command:Spawn', function(player, mapId, loadoutIndex)
 
-    local map = Maps[mapId]
+    if mapId > #config.maps then
+      print('Map nil')
+    end
+
+    local map = config.maps[mapId]
     local loadout = map.loadouts[loadoutIndex]
 
     if loadout == nil then
@@ -15,23 +18,11 @@ local registerSetupCommands = function()
 
     local soldier = player.soldier
 
-    if soldier == nil then
-
-      Spawning.spawnSoldier(player, loadout,
-      LinearTransform(
-        Vec3(1, 0, 0),
-        Vec3(0, 1, 0),
-        Vec3(0, 0, 1),
-        Vec3(-354.525391, 70.436325, 245.196289)
-      ), Team.US)
-      return
-    end
+    if soldier == nil then return end
 
     local transform = player.soldier.transform
 
-    if soldier.isAlive then
-      soldier:Kill()
-    end
+    if soldier.isAlive then soldier:Kill() end
 
     Spawning.spawnSoldier(player, loadout, transform, Team.US)
 

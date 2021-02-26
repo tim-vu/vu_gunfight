@@ -1,5 +1,6 @@
 require('__shared/common.lua')
 require('__shared/timer')
+require('__shared/math/polygon')
 
 local Spawning = require('gunfight/spawning')
 local Team = require('__shared/team')
@@ -9,11 +10,11 @@ local Match = class('Match')
 
 Match.static.TEAMS = 2
 Match.static.ROUNDS = 11
-Match.static.PREGAME_WAIT_DURATION = 2
-Match.static.POSTROUND_WAIT_DURATION = 3
-Match.static.ROUND_ENDED_MOVEMENT_DURATION = 1.5
-Match.static.PREROUND_WAIT_DURATION = 5
-Match.static.POST_MATCH_DURATION = 5
+Match.static.PREGAME_WAIT_DURATION = 2000
+Match.static.POSTROUND_WAIT_DURATION = 3000
+Match.static.ROUND_ENDED_MOVEMENT_DURATION = 1500
+Match.static.PREROUND_WAIT_DURATION = 5000
+Match.static.POST_MATCH_DURATION = 5000
 Match.static.ROUNDS_PER_SIDE = 2
 
 function Match:__init(mapId, map)
@@ -32,6 +33,13 @@ function Match:__init(mapId, map)
   self._playerLeftEvent = Events:Subscribe('Player:Left', self, self.Leave)
   self._playerKilledEvent = Events:Subscribe('Player:Killed', self, self._onPlayerKilled)
   self._soldierDamageHook = Hooks:Install('Soldier:Damage', 1, self, self._onDamageDealt)
+
+  self._pregameWaitTimeout = nil
+  self._preroundWaitTimeout = nil
+  self._postmatchTimeout = nil
+  self._roundEndedMovementTimeout = nil
+  self._roundEndedWaitTimeout = nil
+  self._matchEndedMovementTimeout = nil
 
 end
 
@@ -198,6 +206,8 @@ function Match:_prepareRound()
     p.alive = true
 
     local spawnpoints = self:_getSpawnPoints(self.round, p.team, self.map.spawnpoints)
+
+    print('Spawning soldier')
     Spawning.spawnSoldier(player, loadout, spawnpoints[indices[p.team]], p.team)
 
     indices[p.team] = indices[p.team] + 1
@@ -254,7 +264,7 @@ function Match:_removeEntities(type, predicate)
     local x = spatialEntity.transform.trans.x
     local y = spatialEntity.transform.trans.z
 
-    if (not predicate or predicate(entity)) and self.map.area:IsInside(Vec2(x, y)) then
+    if (not predicate or predicate(entity)) and Polygon:isInside(self.map.area, Vec2(x, y))then
       entity:Destroy()
     end
 
@@ -312,14 +322,13 @@ function Match:stopMatch()
     return
   end
 
+  self._playerLeftEvent:Unsubscribe()
+  self._playerKilledEvent:Unsubscribe()
+  self._soldierDamageHook:Uninstall()
+
   self:_clearTimers()
 
-  self:_sendToPlayers('Match:Ended')
-
-  local players = self.players
-  self.players = { }
-
-  for k,_ in pairs(players) do
+  for k,_ in pairs(self.players) do
     local player = PlayerManager:GetPlayerById(k)
 
     if player ~= nil then
@@ -334,11 +343,10 @@ function Match:stopMatch()
 
   end
 
+  self:_sendToPlayers('Match:Ended')
   self:_updateStatus(Status.MATCH_ENDED)
 
-  self._playerLeftEvent:Unsubscribe()
-  self._playerKilledEvent:Unsubscribe()
-  self._soldierDamageHook:Uninstall()
+  self.players = {}
 
 end
 
@@ -401,7 +409,7 @@ function Match:_onPlayerKilled(player)
           self:toggleInput(false)
         end, Match.ROUND_ENDED_MOVEMENT_DURATION)
 
-        self._postMatchTimeout = SetTimeout(function()
+        self._postmatchTimeout = SetTimeout(function()
           print('Postmatch wait over, stopping match')
 
           self:stopMatch()
@@ -454,6 +462,7 @@ function Match:_onDamageDealt(hook, soldier, info, giverInfo)
 end
 
 function Match:_sendToPlayers(eventName, ...)
+
 
   local players = {}
 

@@ -3,42 +3,19 @@ local engineUpdateEvent = nil
 
 local function onEngineUpdate(deltaTime, simulationDeltaTime)
 
-  if #events == 0 then
-    return
-  end
+  local now = SharedUtils:GetTimeMS()
 
-  local now = os.clock()
   for i = #events, 1, -1 do
 
     local event = events[i]
 
-    if event.interval then
+    if event.timestamp < now then
 
-      if event.timestamp < now - event.delay then
+      event.callback()
 
-        event.callback()
-
-        event.timestamp = now
-
-      end
-
-    else
-
-      if event.timestamp < now then
-
-        event.callback()
-
-        table.remove(events, i)
-      end
-
+      table.remove(events, i)
     end
 
-
-  end
-
-  if #events == 0 then
-    engineUpdateEvent:Unsubscribe()
-    engineUpdateEvent = nil
   end
 
 end
@@ -47,13 +24,13 @@ function SetTimeout(func, delay)
 
   local timeout = {
     callback = func,
-    timestamp = os.clock() + delay,
+    timestamp = SharedUtils:GetTimeMS() + delay,
     interval = false,
   }
 
   table.insert(events, timeout)
 
-  if #events == 1 then
+  if not engineUpdateEvent then
     engineUpdateEvent = Events:Subscribe('Engine:Update', onEngineUpdate)
   end
 
@@ -68,11 +45,6 @@ function ClearTimeout(timeout)
       table.remove(events, k)
     end
 
-  end
-
-  if #events == 0 and engineUpdateEvent ~= nil then
-    engineUpdateEvent:Unsubscribe()
-    engineUpdateEvent = nil
   end
 
 end
