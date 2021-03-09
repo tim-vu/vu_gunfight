@@ -11,6 +11,8 @@
   font-style: normal;
 }
 
+@import url('https://fonts.googleapis.com/css2?family=Fira+Code&display=swap');
+
 :root {
   --our-color: #3bbaff;
   --their-color: #fc644f;
@@ -36,4 +38,9 @@ body {
 
 .shadow-left {
   text-shadow: -0.8px 0.8px 0px var(--background-color);
+}
+
+:root {
+  --lobby-header-color: rgba(0, 0, 0, 0.75);
+  --lobby-content-color: rgba(0, 0, 0, 0.45);
 }

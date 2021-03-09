@@ -2,6 +2,18 @@ local Team = require('__shared/team')
 
 local registerSetupCommands = function(config)
 
+  NetEvents:Subscribe('Setup:Teleport', function(player, position)
+
+    local soldier = player.soldier
+
+    if not soldier then
+      return
+    end
+
+    soldier:SetPosition(position)
+
+  end)
+
   NetEvents:Subscribe('Command:Spawn', function(player, mapId, loadoutIndex)
 
     if mapId > #config.maps then

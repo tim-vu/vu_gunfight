@@ -3,14 +3,14 @@ import { Team } from "models/Team";
 import { Store } from "redux";
 import { Action, AppState } from "store";
 import { History } from "history";
-import { InitializeLobby, INITIALIZE_LOBBY, JoinAnyMatch, JoinedMatch, JOINED_MATCH, JoinMatch, LeaveMatch, LeftMatch, LEFT_MATCH, LobbyMatchStarting as LobbyMatchStarted, LOBBY_MATCH_STARTED, MatchStatusChanged, MATCH_STATUS_CHANGED, ResetMatch, RESET_MATCH, UpdateScore, UPDATE_SCORE } from "./types";
+import { InitializeLobby, INITIALIZE_LOBBY, JoinedMatch, JOINED_MATCH, LeftMatch, LEFT_MATCH, LobbyMatchStarting as LobbyMatchStarted, LOBBY_MATCH_STARTED, MatchStatusChanged, MATCH_STATUS_CHANGED, ResetMatch, RESET_MATCH, UpdateScore, UPDATE_SCORE } from "./types";
 import { toast } from "react-toastify";
 import { Status } from "models/Status";
 
 declare const window: any;
 declare const WebUI: any;
 
-export function joinAnyMatch() : JoinAnyMatch {
+export function joinAnyMatch() {
   
   WebUI.Call('DispatchEvent', 'WebUI:JoinAnyMatch');
 
@@ -20,7 +20,7 @@ export function joinAnyMatch() : JoinAnyMatch {
 
 }
 
-export function joinMatch(matchId : string, team : Team) : JoinMatch {
+export function joinMatch(matchId : string, team : Team) {
 
   const data : any = {
     mapId : matchId,
@@ -36,7 +36,7 @@ export function joinMatch(matchId : string, team : Team) : JoinMatch {
   }
 }
 
-export function leaveMatch() : LeaveMatch {
+export function leaveMatch() {
   
   WebUI.Call('DispatchEvent', 'WebUI:LeaveMatch');
   
@@ -155,7 +155,7 @@ export default function registerActionCreators(store : Store<AppState, Action>, 
   }
 
   window.showLobby = () => {
-    history.push('/');
+    history.push('/lobby');
   }
 
 }

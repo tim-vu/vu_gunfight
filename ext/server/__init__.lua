@@ -1,5 +1,5 @@
 local Lobby = require('lobby')
-local registerSetupCommands = require('commands')
+local registerSetupCommands = require('setup')
 local version = require('version')
 
 local VERSION_URL =

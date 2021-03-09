@@ -1,8 +1,3 @@
-:root {
-  --lobby-header-color: rgba(0, 0, 0, 0.75);
-  --lobby-content-color: rgba(0, 0, 0, 0.45);
-}
-
 .matchdisplay {
   width: 44.44vh;
   display: inline-block;

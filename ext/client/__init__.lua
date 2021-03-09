@@ -1,19 +1,22 @@
 require('gunfight/match')
+require('setup/setup')
+require('lobby')
+require('__shared/common')
 
-local Lobby = require('lobby')
-local Commands = require('commands')
 local applyUIModifications = require('gunfight/vanilla_ui')
 
 Events:Subscribe('Gunfight:Initialize', function(config)
   print('Gunfight initializing, loading map: ' .. config.mapName)
 
+  WebUI:Init()
+
   if config.setup then
     print('Setup mode enabled')
-    Commands.registerSetupCommands()
+    Setup = Setup(config)
   else
     applyUIModifications()
     Lobby = Lobby()
-    Commands.registerLobbyCommands(Lobby)
+    Match = Match()
   end
 
 end)

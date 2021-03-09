@@ -191,9 +191,3 @@ function Match:_handleDeathCamera(deltaTime)
 
 end
 
-if MatchInstance == nil then
-  MatchInstance = Match()
-end
-
-return MatchInstance
-

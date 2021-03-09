@@ -9,7 +9,7 @@ local CAMERA_TRANSFORM = LinearTransform(
   Vec3(0, 500, 0)
 )
 
-local Lobby = class('Lobby')
+class('Lobby')
 
 Lobby.static.LEAVE_TOAST_DELAY = 5000
 Lobby.static.LEAVE_HOLD_DURATION = 3000
@@ -247,5 +247,3 @@ function Lobby:_onMatchEnded(mapId)
   WebUI:ExecuteJS(call)
 
 end
-
-return Lobby

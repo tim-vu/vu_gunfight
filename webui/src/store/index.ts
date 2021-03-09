@@ -14,21 +14,28 @@ import lobbyReducer from './lobby/reducer';
 import { LobbyActions, LobbyState } from './lobby/types';
 import registerLobbyActionCreators from './lobby/actions';
 
+import setupReducer from './setup/reducer';
+import { SetupActions, SetupState } from './setup/types';
+import registerSetupActionCreators from './setup/actions';
+
 export interface AppState {
   rounds: RoundsState;
   match: MatchState;
   lobby: LobbyState;
+  setup: SetupState;
 }
 
 export type Action =
   | RoundsAction
   | MatchActions
   | LobbyActions
+  | SetupActions
 
 const rootReducer = combineReducers<AppState>({
   rounds: roundReducer,
   match: matchReducer,
-  lobby: lobbyReducer
+  lobby: lobbyReducer,
+  setup: setupReducer
 })
 
 export function registerActionCreators(store : Store<AppState, Action>, history : History){
@@ -36,7 +43,7 @@ export function registerActionCreators(store : Store<AppState, Action>, history 
   registerMatchActionCreators(history);
   registerRoundActionCreators(store, history);
   registerLobbyActionCreators(store, history);
-  
+  registerSetupActionCreators(store, history);
 }
 
 function configureStore() {

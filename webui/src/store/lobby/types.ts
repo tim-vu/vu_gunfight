@@ -29,24 +29,10 @@ export interface InitializeLobby {
   name: string;
 }
 
-export interface JoinAnyMatch {
-  type: typeof JOIN_ANY_MATCH;
-}
-
-export interface JoinMatch {
-  type: typeof JOIN_MATCH;
-  matchId: string;
-  team: Team;
-}
-
 export interface JoinedMatch {
   type: typeof JOINED_MATCH;
   matchId: string;
   player: Player;
-}
-
-export interface LeaveMatch {
-  type: typeof LEAVE_MATCH;
 }
 
 export interface LeftMatch {

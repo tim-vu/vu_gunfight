@@ -9,11 +9,13 @@ import HealthIndicator from 'components/RoundIndicator/HealthIndicator/HealthInd
 import Lobby from 'components/Lobby/Lobby';
 import MatchCompleted from 'components/MatchCompleted/MatchCompleted';
 import { PREROUND_WAIT } from 'common/constants';
+import MapConfig from 'components/MapConfig/MapConfig';
 
 const App: React.FC = () => {
   return (
     <div className="screen">
-      <Route path="/" exact component={Lobby} />
+      <Route path="/config" ext component={MapConfig} />
+      <Route path="/lobby" exact component={Lobby} />
       <Route path="/round_completed" component={RoundCompleted} />
       <Route path="/round_starting" component={RoundIndicator} />
       <Route

@@ -8,4 +8,8 @@ Events:Subscribe('Level:Loaded', function(levelName, gameMode)
   settings = SyncedGameSettings(ResourceManager:GetSettings('SyncedGameSettings'))
   settings.disableRegenerateHealth = true
 
+  settings = ServerSettings(ResourceManager:GetSettings('ServerSettings'))
+  settings.isDesertingAllowed = true
+  settings.isDestructionEnabled = false
+
 end)

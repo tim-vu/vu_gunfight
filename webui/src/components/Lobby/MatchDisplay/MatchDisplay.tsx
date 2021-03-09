@@ -9,6 +9,7 @@ import { Team } from 'models/Team';
 import React from 'react';
 import { joinMatch } from 'store/lobby/actions';
 import './MatchDisplay.css';
+import 'index.css';
 
 const UPDATE_INTERVAL = 1000;
 
