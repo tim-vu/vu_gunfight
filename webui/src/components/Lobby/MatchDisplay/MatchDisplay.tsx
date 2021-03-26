@@ -123,7 +123,7 @@ const MatchDisplay: React.FC<MatchDisplayProps> = ({ match, joinDisabled }) => {
   return (
     <div className="matchdisplay">
       <div className="matchdisplay-map">
-        <h1>{match?.map || ''}</h1>
+        <h1>{match?.mapName || ''}</h1>
       </div>
       <div className="matchdisplay-status">
         <p>Status: {toStatusString(match?.status)}</p>

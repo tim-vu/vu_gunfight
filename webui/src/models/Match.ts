@@ -3,7 +3,7 @@ import { Status } from "./Status";
 
 export interface Match {
   mapId: string;
-  map: string;
+  mapName: string;
   teamSize: number;
   startTime: number;
   status: Status;
